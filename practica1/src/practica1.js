@@ -40,9 +40,9 @@ MemoryGame = function(gs) {
 	};
 
 	this.loop = function(){
-
+		var obj = this;
 		// Llama al metodo draw cada 16ms, esto es equivalente unos 60 fps
-		window.setInterval(this.draw(), 16);
+		window.setInterval(function(){obj.draw()}, 16);
 	};
 
 	this.draw = function(){ // Esta funcion aun no esta terminada
@@ -59,39 +59,30 @@ MemoryGame = function(gs) {
 
 	this.onClick = function(cardId){
 
-		console.log(this.gameCards[cardId].card);
-		console.log('Estado inicial: '+this.gameCards[cardId].state);
 		// Aseguramos que se elija una carta que este en su estado back
 		if (this.gameCards[cardId].state == 'back'){
 			// Si es la primera carta escogida
 			if (this.numCards == 0){
 				this.cardId1 = cardId; // Guardamos el indice de la  primera carta
 				this.gameCards[this.cardId1].flip(); // Cmbiamos su estado a flip
-				console.log('Estado tras jugada: '+this.gameCards[this.cardId1].state);
 				this.numCards++; //Incrementamos el numero de cartas volteadas en la jugada
-				console.log('Cartas seleccionadas(0|1): '+this.numCards);
 			}
 			else{
 				this.cardId2 = cardId; // Guardamos el indice de la segunda carta
 				this.gameCards[this.cardId2].flip(); // Cambiamos su estado a flip
-				console.log('Estado tras jugada: '+this.gameCards[this.cardId2].state);
 				// Comparamos las dos cartas actuales de la jugada
 				if (this.gameCards[this.cardId2].compareTo(this.gameCards[this.cardId1].card)){ // Si son pareja
 					
-					console.log('¡¡¡¡Las cartas son iguales!!!!');
 					// Marcamos las cartas como encontradas
 					this.gameCards[this.cardId1].found();
 					this.gameCards[this.cardId2].found();
 
-					console.log('Estado tras jugada: '+this.gameCards[this.cardId1].state);
-					console.log('Estado tras jugada: '+this.gameCards[this.cardId2].state);
-
 					// Actualizamos el numero de cartas volteadas de la jugada
 					this.numCards--;
-					console.log('Cartas seleccionadas(0|1): '+this.numCards);
+
 					//Actualizamos el total de cartas encontradas
 					this.totalCards += 2;
-					console.log('Total de cartas encontradas: '+this.totalCards);
+
 					if(this.totalCards == 16) // Ha ganado
 						this.msg = 'You Win!!';
 					else // Sigue la partida
@@ -99,18 +90,14 @@ MemoryGame = function(gs) {
 				}
 				else{ // No son pareja
 
-					console.log('Oooohhhh, no son iguales...')
 					// Damos la vuelta a las dos cartas afectadas
-					//setTimeout({}, 1000);
+					//var obj = this;
+					//window.setTimeout(function(){}, 2000);
 					this.gameCards[this.cardId1].back();
 					this.gameCards[this.cardId2].back();
 
-					console.log('Estado tras jugada: '+this.gameCards[this.cardId1].state);
-					console.log('Estado tras jugada: '+this.gameCards[this.cardId2].state);
-
 					// Actualizamos el numero de cartas volteadas de la jugada
 					this.numCards--;
-					console.log('Cartas seleccionadas(0|1): '+this.numCards);
 					//Tiene que intentarlo de nuevo
 					this.msg = 'Try again';
 				}
