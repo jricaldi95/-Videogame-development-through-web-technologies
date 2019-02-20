@@ -45,7 +45,7 @@ MemoryGame = function(gs) {
 		window.setInterval(function(){obj.draw()}, 16);
 	};
 
-	this.draw = function(){ // Esta funcion aun no esta terminada
+	this.draw = function(){ 
 
 		// Escribe el mensaje con el estado actual del juego
 		this.gs.drawMessage(this.msg);
@@ -91,10 +91,11 @@ MemoryGame = function(gs) {
 				else{ // No son pareja
 
 					// Damos la vuelta a las dos cartas afectadas
-					//var obj = this;
-					//window.setTimeout(function(){}, 2000);
-					this.gameCards[this.cardId1].back();
-					this.gameCards[this.cardId2].back();
+					var obj = this;
+					window.setTimeout(function(){
+						obj.gameCards[obj.cardId1].back(); 
+						obj.gameCards[obj.cardId2].back();
+					}, 750);
 
 					// Actualizamos el numero de cartas volteadas de la jugada
 					this.numCards--;
