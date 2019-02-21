@@ -19,8 +19,9 @@ MemoryGame = function(gs) {
 	this.cardId2;
 	this.numCards = 0; // Par de cartas seleccionadas
 
-	this.gameState = 'play'; // Estado del juego
 	this.msg = 'Memory Game'; // Mensaje del banner
+
+	this.ignoreClicks = true;
 
 	this.initGame = function(){
 
@@ -59,48 +60,55 @@ MemoryGame = function(gs) {
 
 	this.onClick = function(cardId){
 
-		// Aseguramos que se elija una carta que este en su estado back
-		if (this.gameCards[cardId].state == 'back'){
-			// Si es la primera carta escogida
-			if (this.numCards == 0){
-				this.cardId1 = cardId; // Guardamos el indice de la  primera carta
-				this.gameCards[this.cardId1].flip(); // Cmbiamos su estado a flip
-				this.numCards++; //Incrementamos el numero de cartas volteadas en la jugada
-			}
-			else{
-				this.cardId2 = cardId; // Guardamos el indice de la segunda carta
-				this.gameCards[this.cardId2].flip(); // Cambiamos su estado a flip
-				// Comparamos las dos cartas actuales de la jugada
-				if (this.gameCards[this.cardId2].compareTo(this.gameCards[this.cardId1].card)){ // Si son pareja
-					
-					// Marcamos las cartas como encontradas
-					this.gameCards[this.cardId1].found();
-					this.gameCards[this.cardId2].found();
 
-					// Actualizamos el numero de cartas volteadas de la jugada
-					this.numCards--;
-
-					//Actualizamos el total de cartas encontradas
-					this.totalCards += 2;
-
-					if(this.totalCards == 16) // Ha ganado
-						this.msg = 'You Win!!';
-					else // Sigue la partida
-						this.msg = 'Match Found!!';
+		if(this.ignoreClicks == true){
+			// Aseguramos que se elija una carta que este en su estado back
+			if (this.gameCards[cardId].state == 'back'){
+				// Si es la primera carta escogida
+				if (this.numCards == 0){
+					this.cardId1 = cardId; // Guardamos el indice de la  primera carta
+					this.gameCards[this.cardId1].flip(); // Cmbiamos su estado a flip
+					this.numCards++; //Incrementamos el numero de cartas volteadas en la jugada
 				}
-				else{ // No son pareja
+				else{
+					this.ignoreClicks = false;
+					this.cardId2 = cardId; // Guardamos el indice de la segunda carta
+					this.gameCards[this.cardId2].flip(); // Cambiamos su estado a flip
+					// Comparamos las dos cartas actuales de la jugada
+					if (this.gameCards[this.cardId2].compareTo(this.gameCards[this.cardId1].card)){ // Si son pareja
+						
+						// Marcamos las cartas como encontradas
+						this.gameCards[this.cardId1].found();
+						this.gameCards[this.cardId2].found();
 
-					// Damos la vuelta a las dos cartas afectadas
-					var obj = this;
-					window.setTimeout(function(){
-						obj.gameCards[obj.cardId1].back(); 
-						obj.gameCards[obj.cardId2].back();
-					}, 750);
+						// Actualizamos el numero de cartas volteadas de la jugada
+						this.numCards--;
 
-					// Actualizamos el numero de cartas volteadas de la jugada
-					this.numCards--;
-					//Tiene que intentarlo de nuevo
-					this.msg = 'Try again';
+						//Actualizamos el total de cartas encontradas
+						this.totalCards += 2;
+
+						if(this.totalCards == 16) // Ha ganado
+							this.msg = 'You Win!!';
+						else // Sigue la partida
+							this.msg = 'Match Found!!';
+
+						this.ignoreClicks = true;
+					}
+					else{ // No son pareja
+
+						// Damos la vuelta a las dos cartas afectadas
+						var obj = this;
+						window.setTimeout(function(){
+							obj.gameCards[obj.cardId1].back(); 
+							obj.gameCards[obj.cardId2].back();
+							obj.ignoreClicks = true;
+						}, 700);
+
+						// Actualizamos el numero de cartas volteadas de la jugada
+						this.numCards--;
+						//Tiene que intentarlo de nuevo
+						this.msg = 'Try again';
+					}
 				}
 			}
 		}
