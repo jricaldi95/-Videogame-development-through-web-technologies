@@ -9,4 +9,3 @@ Projects of the subjet DVI (Desarrollo de videojuegos mediante tecnologías web)
 ## Co - Author
 
 * **Yi Teng Wang** - [Yiiiteng](https://github.com/Yiiiteng)
-Hi, i´m professional
