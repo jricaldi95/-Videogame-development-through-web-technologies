@@ -1,5 +1,5 @@
 var sprites = {
- frog:{sx: 0, sy: 340, w: 39, h: 46, frames: 1},
+ frog:{sx: 0, sy: 340, w: 38, h: 46, frames: 1},
  background:{sx: 422, sy: 0, w: 552, h: 625, frames: 1 },
  car_blue: { sx: 0, sy: 0, w: 100, h: 51, frames: 1 },
  car_green: { sx: 105, sy: 0, w: 100, h: 51, frames: 1 },
@@ -146,7 +146,7 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_brown: {sprite: 'car_brown', speed: -300},
     trunk1:{sprite: 'trunk1',speed: -50},
     trunk2:{sprite: 'trunk2',speed: 50},
-    trunk3:{sprite: 'trunk3',speed: -50}
+    trunk3:{sprite: 'trunk3',speed: -50},
     turtle:{sprite: 'turtle',speed: 100}
 };
 
@@ -288,6 +288,25 @@ Turtle.prototype.hit = function(damage) {
       this.board.add(new Explosion(this.x + this.w/2, 
                                    this.y + this.h/2));
     }
+  }
+
+}
+
+
+//WATER
+
+var Water = function() {
+  this.x = Game.width;
+  this.y =  Game.height - (48*8);
+}
+
+Water.prototype = new Sprite();
+Water.prototype.draw = function(){};
+Water.prototype.step = function(dt) {
+
+  var collision = this.board.collide(this,OBJECT_FROG);
+  if(collision) {
+    collision.hit();
   }
 
 }

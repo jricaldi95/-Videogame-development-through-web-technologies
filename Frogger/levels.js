@@ -16,7 +16,7 @@ var Level = function(levelData,callback) {
     this.t = 0;
     this.callback = callback;
 }
-Level.prototype = new Sprite();
+
 Level.prototype.draw = function(ctx) { }
 
 Level.prototype.step = function(dt) {
