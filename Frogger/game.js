@@ -18,7 +18,6 @@ var playGame = function() {
   //Game.setBoard(2,new Starfield(100,1.0,50));
 
   var board = new GameBoard();
-  board.add(new Frog());
 
   board.add(new Car(objects.car_yellow.sprite, objects.car_yellow.speed));
   board.add(new Car(objects.car_brown.sprite, objects.car_brown.speed));
@@ -32,6 +31,8 @@ var playGame = function() {
 
   board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
   board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
+  
+  board.add(new Frog());
  //board.add(new Background());
   //board.add(new Level(level1,winGame));
   Game.setBoard(1,board);
