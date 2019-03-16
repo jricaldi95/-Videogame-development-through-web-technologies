@@ -112,8 +112,8 @@ Frog.prototype.hit = function(damage) {
   }
 };
 
-Frog.prototype.onTrunk = function(vTrunk) {
-  this.vx = vTrunk;
+Frog.prototype.onObject = function(vObj) {
+  this.vx = vObj;
 }
 
 
@@ -147,7 +147,7 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     trunk1:{sprite: 'trunk1',speed: -50},
     trunk2:{sprite: 'trunk2',speed: 50},
     trunk3:{sprite: 'trunk3',speed: -50},
-    turtle:{sprite: 'turtle',speed: 100}
+    turtle:{sprite: 'turtle',speed: 50}
 };
 
 var Spawner = function(data) {
@@ -233,7 +233,7 @@ Trunk.prototype.step = function(dt) {
 
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
-    collision.onTrunk(this.speed);
+    collision.onObject(this.speed);
   }
 
 }
@@ -276,7 +276,7 @@ Turtle.prototype.step = function(dt) {
 
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
-    
+    collision.onObject(this.speed);
   }
 
 }
