@@ -8,7 +8,8 @@ var sprites = {
  car_brown: { sx: 140, sy: 55, w: 180, h: 55, frames: 1 },
  trunk1:{sx: 260, sy: 170, w: 140, h: 55, frames: 1},
  trunk2:{sx: 0, sy: 115, w: 200, h: 55, frames: 1},
- trunk3:{sx: 0, sy: 163, w: 270, h: 55, frames: 1}
+ trunk3:{sx: 0, sy: 163, w: 270, h: 55, frames: 1},
+ turtle:{sx: 0, sy: 284, w: 54, h: 60, frames: 1}
 
  
 };
@@ -138,7 +139,8 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_brown: {sprite: 'car_brown', speed: -300},
     trunk1:{sprite: 'trunk1',speed: -150},
     trunk2:{sprite: 'trunk2',speed: 150},
-    trunk3:{sprite: 'trunk3',speed: -200}
+    trunk3:{sprite: 'trunk3',speed: -200},
+    turtle:{sprite: 'turtle',speed: 100}
 };
 
 var Spawner = function(data) {
@@ -242,15 +244,15 @@ Trunk.prototype.hit = function(damage) {
 
 
 //TURTLE
-var row = 0;
+var row_t = 1;
 var Turtle = function(sprite,speed) {
   this.setup(sprite);
   this.speed = speed;
   this.x = (speed > 0) ? 0 : Game.width;
-  this.y = Game.height - (48*7) - ((2 * row + 1) * 48);
-    row++;
-  if (row > 2){
-    row = 0;
+  this.y = Game.height - (48*7) - ((2 * row_t) * 48);
+    row_t++;
+  if (row_t > 2){
+    row_t = 0;
   }
 }
 
