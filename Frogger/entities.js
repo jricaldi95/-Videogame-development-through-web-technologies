@@ -64,7 +64,7 @@ Background.prototype.step = function() {}
 //FROG
 
 var Frog = function() {
-    this.setup('frog', {reloadTime: 0.25});
+    this.setup('frog', {vx: 0, reloadTime: 0.25});
     this.reload = this.reloadTime;
     this.x = Game.width / 2 - this.w / 2;
     this.y = Game.height - this.h;
@@ -79,6 +79,8 @@ Frog.prototype.step = function(dt) {
     this.reload -= dt;
 
     if (this.reload <= 0) {
+
+        this.x += this.vx * dt;
 
         if (Game.keys['up']) {
             this.reload = this.reloadTime;
@@ -100,6 +102,7 @@ Frog.prototype.step = function(dt) {
         if (this.x < 0) this.x = 0;
         else if (this.x > Game.width - this.w) this.x = Game.width - this.w;
     }
+    this.vx = 0;
 };
 
 Frog.prototype.hit = function(damage) {
@@ -107,6 +110,10 @@ Frog.prototype.hit = function(damage) {
     loseGame();
   }
 };
+
+Frog.prototype.onTrunk = function(vTrunk) {
+  this.vx = vTrunk;
+}
 
 
 
@@ -136,9 +143,9 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_yellow: {sprite: 'car_yellow',speed: 200},
     car_red: {sprite: 'car_red', speed: 250 },
     car_brown: {sprite: 'car_brown', speed: -300},
-    trunk1:{sprite: 'trunk1',speed: -150},
-    trunk2:{sprite: 'trunk2',speed: 150},
-    trunk3:{sprite: 'trunk3',speed: -200}
+    trunk1:{sprite: 'trunk1',speed: -50},
+    trunk2:{sprite: 'trunk2',speed: 50},
+    trunk3:{sprite: 'trunk3',speed: -50}
 };
 
 var Spawner = function(data) {
@@ -224,7 +231,7 @@ Trunk.prototype.step = function(dt) {
 
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
-    collision.hit();
+    collision.onTrunk(this.speed);
   }
 
 }
