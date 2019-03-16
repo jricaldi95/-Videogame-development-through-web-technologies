@@ -18,7 +18,7 @@ var OBJECT_FROG = 1,
     OBJECT_TRUNK = 2,
     OBJECT_CAR = 4,
     OBJECT_TURTLE = 8,
-    OBJECT_POWERUP = 16;
+    OBJECT_WATER = 16;
 
 
 /// CLASE PADRE SPRITE
@@ -265,7 +265,6 @@ var Turtle = function(sprite,speed) {
 
 Turtle.prototype = new Sprite();
 Turtle.prototype.type = OBJECT_TURTLE;
-
 Turtle.prototype.step = function(dt) {
   this.t += dt;
   this.x += this.speed * dt;
@@ -296,12 +295,16 @@ Turtle.prototype.hit = function(damage) {
 //WATER
 
 var Water = function() {
-  this.x = Game.width;
+  this.w = Game.width;
+  this.h = 48 * 5;
+  this.x = 0;
   this.y =  Game.height - (48*8);
 }
 
 Water.prototype = new Sprite();
 Water.prototype.draw = function(){};
+Water.prototype.type = OBJECT_WATER;
+
 Water.prototype.step = function(dt) {
 
   var collision = this.board.collide(this,OBJECT_FROG);
