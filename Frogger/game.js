@@ -3,7 +3,7 @@
 
 // Especifica lo que se debe pintar al cargar el juego
 var startGame = function() {
-  Game.setBoard(0,new TitleScreen("Frogger", 
+  Game.setBoard(0,new TitleScreen("Frogger 2019", 
                                   "Press space to start playing",
                                   playGame));
 }
@@ -25,14 +25,18 @@ var playGame = function() {
   board.add(new Car(objects.car_green.sprite, objects.car_green.speed));
   board.add(new Car(objects.car_red.sprite, objects.car_red.speed));
  
+  board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
+  board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
+
   board.add(new Trunk(objects.trunk2.sprite, objects.trunk2.speed));
   board.add(new Trunk(objects.trunk3.sprite, objects.trunk3.speed));
   board.add(new Trunk(objects.trunk1.sprite, objects.trunk1.speed));
 
-  board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
-  board.add(new Turtle(objects.turtle.sprite, objects.turtle.speed));
   
+
   board.add(new Frog());
+  board.add(new Water());
+  board.add(new Home());
  //board.add(new Background());
   //board.add(new Level(level1,winGame));
   Game.setBoard(1,board);
@@ -58,5 +62,5 @@ var loseGame = function() {
 // y este después de realizar la inicialización llamará a
 // startGame
 window.addEventListener("load", function() {
-  Game.initialize("game",sprites,playGame);
+  Game.initialize("game",sprites,startGame);
 });

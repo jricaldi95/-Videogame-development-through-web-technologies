@@ -1,15 +1,15 @@
 var sprites = {
- frog:{sx: 0, sy: 340, w: 38, h: 46, frames: 1},
+ frog:{sx: 0, sy: 340, w: 36, h: 45, frames: 1},
  background:{sx: 422, sy: 0, w: 552, h: 625, frames: 1 },
  car_blue: { sx: 0, sy: 0, w: 100, h: 51, frames: 1 },
  car_green: { sx: 105, sy: 0, w: 100, h: 51, frames: 1 },
  car_yellow: { sx: 205, sy: 0, w: 98, h: 51, frames: 1 },
  car_red: { sx: 0, sy: 54, w: 140, h: 58, frames: 1 },
  car_brown: { sx: 140, sy: 55, w: 180, h: 55, frames: 1 },
- trunk1:{sx: 260, sy: 170, w: 140, h: 55, frames: 1},
- trunk2:{sx: 0, sy: 115, w: 200, h: 55, frames: 1},
- trunk3:{sx: 0, sy: 163, w: 270, h: 55, frames: 1},
- turtle:{sx: 0, sy: 284, w: 54, h: 60, frames: 1}
+ trunk1:{sx: 260, sy: 167, w: 140, h: 51, frames: 1},
+ trunk2:{sx: 0, sy: 116, w: 200, h: 51, frames: 1},
+ trunk3:{sx: 0, sy: 163, w: 268, h: 51, frames: 1},
+ turtle:{sx: 0, sy: 284, w: 54, h: 50, frames: 1}
 
  
 };
@@ -18,7 +18,8 @@ var OBJECT_FROG = 1,
     OBJECT_TRUNK = 2,
     OBJECT_CAR = 4,
     OBJECT_TURTLE = 8,
-    OBJECT_WATER = 16;
+    OBJECT_WATER = 16,
+    OBJECT_HOME = 32;
 
 
 /// CLASE PADRE SPRITE
@@ -76,6 +77,11 @@ Frog.prototype.type = OBJECT_FROG;
 
 Frog.prototype.step = function(dt) {
 
+  if(this.board.collide(this,OBJECT_WATER)){
+      if(!this.board.collide(this,OBJECT_TRUNK) && !this.board.collide(this,OBJECT_TURTLE))
+           this.hit();
+   }
+
     // Restamos el tiempo trancurrido
     this.reload -= dt;
 
@@ -85,16 +91,16 @@ Frog.prototype.step = function(dt) {
 
         if (Game.keys['up']) {
             this.reload = this.reloadTime;
-            this.y -= this.h;
+            this.y -= 48;
         } else if (Game.keys['down']) {
             this.reload = this.reloadTime;
-            this.y += this.h;
+            this.y += 48;
         } else if (Game.keys['right'] && this.x + this.w <= Game.width - this.w) {
             this.reload = this.reloadTime;
-            this.x += this.w;
+            this.x += 40;
         } else if (Game.keys['left'] && this.x - this.w >= 0) {
             this.reload = this.reloadTime;
-            this.x -= this.w;
+            this.x -= 40;
         }
 
 
@@ -144,10 +150,10 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_yellow: {sprite: 'car_yellow',speed: 200},
     car_red: {sprite: 'car_red', speed: 250 },
     car_brown: {sprite: 'car_brown', speed: -300},
-    trunk1:{sprite: 'trunk1',speed: -50},
-    trunk2:{sprite: 'trunk2',speed: 50},
-    trunk3:{sprite: 'trunk3',speed: -50},
-    turtle:{sprite: 'turtle',speed: 50}
+    trunk1:{sprite: 'trunk1',speed: -20},
+    trunk2:{sprite: 'trunk2',speed: 30},
+    trunk3:{sprite: 'trunk3',speed: -40},
+    turtle:{sprite: 'turtle',speed: 35}
 };
 
 var Spawner = function(data) {
@@ -296,22 +302,37 @@ Turtle.prototype.hit = function(damage) {
 
 var Water = function() {
   this.w = Game.width;
-  this.h = 48 * 5;
+  this.h = Game.height - ( 48 * 7) ;
   this.x = 0;
-  this.y =  Game.height - (48*8);
+  this.y = 0;
 }
 
 Water.prototype = new Sprite();
 Water.prototype.draw = function(){};
 Water.prototype.type = OBJECT_WATER;
 
-Water.prototype.step = function(dt) {
+Water.prototype.step = function(dt) {};
 
+
+//HOME
+
+var Home = function() {
+  this.w = Game.width;
+  this.h = Game.height - ( 48 * 12) ;
+  this.x = 0;
+  this.y = 0;
+}
+
+Home.prototype = new Sprite();
+Home.prototype.draw = function(){};
+Home.prototype.type = OBJECT_HOME;
+
+Home.prototype.step = function(dt) {
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
-    collision.hit();
+    winGame();
   }
 
-}
+};
 
 
