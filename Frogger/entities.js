@@ -18,7 +18,8 @@ var OBJECT_FROG = 1,
     OBJECT_TRUNK = 2,
     OBJECT_CAR = 4,
     OBJECT_TURTLE = 8,
-    OBJECT_WATER = 16;
+    OBJECT_WATER = 16,
+    OBJECT_HOME = 32;
 
 
 /// CLASE PADRE SPRITE
@@ -149,7 +150,7 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_yellow: {sprite: 'car_yellow',speed: 200},
     car_red: {sprite: 'car_red', speed: 250 },
     car_brown: {sprite: 'car_brown', speed: -300},
-    trunk1:{sprite: 'trunk1',speed: -50},
+    trunk1:{sprite: 'trunk1',speed: -20},
     trunk2:{sprite: 'trunk2',speed: 30},
     trunk3:{sprite: 'trunk3',speed: -40},
     turtle:{sprite: 'turtle',speed: 35}
@@ -311,5 +312,27 @@ Water.prototype.draw = function(){};
 Water.prototype.type = OBJECT_WATER;
 
 Water.prototype.step = function(dt) {};
+
+
+//HOME
+
+var Home = function() {
+  this.w = Game.width;
+  this.h = Game.height - ( 48 * 12) ;
+  this.x = 0;
+  this.y = 0;
+}
+
+Home.prototype = new Sprite();
+Home.prototype.draw = function(){};
+Home.prototype.type = OBJECT_HOME;
+
+Home.prototype.step = function(dt) {
+  var collision = this.board.collide(this,OBJECT_FROG);
+  if(collision) {
+    winGame();
+  }
+
+};
 
 
