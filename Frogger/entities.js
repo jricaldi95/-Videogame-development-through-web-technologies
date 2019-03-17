@@ -9,8 +9,8 @@ var sprites = {
  trunk1:{sx: 260, sy: 167, w: 140, h: 51, frames: 1},
  trunk2:{sx: 0, sy: 116, w: 200, h: 51, frames: 1},
  trunk3:{sx: 0, sy: 163, w: 268, h: 51, frames: 1},
- turtle:{sx: 0, sy: 284, w: 54, h: 50, frames: 1}
-
+ turtle:{sx: 0, sy: 284, w: 54, h: 50, frames: 1},
+ death:{sx: 215, sy: 116, w: 47, h: 50, frames: 4}
  
 };
 
@@ -114,32 +114,13 @@ Frog.prototype.step = function(dt) {
 
 Frog.prototype.hit = function(damage) {
   if(this.board.remove(this)) {
+    this.board.add(new Death(this.x, this.y));
     loseGame();
   }
 };
 
 Frog.prototype.onObject = function(vObj) {
   this.vx = vObj;
-}
-
-
-
-///// EXPLOSION
-
-var Explosion = function(centerX,centerY) {
-  this.setup('explosion', { frame: 0 });
-  this.x = centerX - this.w/2;
-  this.y = centerY - this.h/2;
-  this.subFrame = 0;
-};
-
-Explosion.prototype = new Sprite();
-
-Explosion.prototype.step = function(dt) {
-  this.frame = Math.floor(this.subFrame++ / 3);
-  if(this.subFrame >= 36) {
-    this.board.remove(this);
-  }
 };
 
 
@@ -265,7 +246,7 @@ var Turtle = function(sprite,speed) {
   this.y = Game.height - (48*7) - ((2 * row_t) * 48);
     row_t++;
   if (row_t > 2){
-    row_t = 0;
+    row_t = 1;
   }
 }
 
@@ -335,4 +316,20 @@ Home.prototype.step = function(dt) {
 
 };
 
+
+//DEATH
+var Death = function(centerX, centerY) {
+  this.setup('death', {frame: 0});
+  this.x = centerX;
+  this.y = centerY;
+  this.subFrame = 0;
+}
+
+Death.prototype = new Sprite();
+Death.prototype.step = function(dt) {
+  this.frame = Math.floor(this.subFrame++ / 5);
+  if (this.subFrame >= 20) {
+      this.board.remove(this);
+  }
+}
 
