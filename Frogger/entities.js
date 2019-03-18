@@ -56,7 +56,7 @@ var Background = function(){
 
    this.setup('background');
    this.x = 0;
-   this.y =0;
+   this.y = 0;
  }
 
 Background.prototype = new Sprite();
@@ -183,16 +183,6 @@ Car.prototype.step = function(dt) {
 
 }
 
-Car.prototype.hit = function(damage) {
-  this.health -= damage;
-  if(this.health <=0) {
-    if(this.board.remove(this)) {
-      this.board.add(new Explosion(this.x + this.w/2, 
-                                   this.y + this.h/2));
-    }
-  }
-
-}
 
 //TRUNK
 var row = 0;
@@ -221,17 +211,6 @@ Trunk.prototype.step = function(dt) {
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
     collision.onObject(this.speed);
-  }
-
-}
-
-Trunk.prototype.hit = function(damage) {
-  this.health -= damage;
-  if(this.health <=0) {
-    if(this.board.remove(this)) {
-      this.board.add(new Explosion(this.x + this.w/2, 
-                                   this.y + this.h/2));
-    }
   }
 
 }
@@ -267,25 +246,14 @@ Turtle.prototype.step = function(dt) {
 
 }
 
-Turtle.prototype.hit = function(damage) {
-  this.health -= damage;
-  if(this.health <=0) {
-    if(this.board.remove(this)) {
-      this.board.add(new Explosion(this.x + this.w/2, 
-                                   this.y + this.h/2));
-    }
-  }
-
-}
-
 
 //WATER
 
 var Water = function() {
   this.w = Game.width;
-  this.h = Game.height - ( 48 * 7) ;
+  this.h = Game.height - ( 48 * 8);
   this.x = 0;
-  this.y = 0;
+  this.y = 49;
 }
 
 Water.prototype = new Sprite();
@@ -311,6 +279,7 @@ Home.prototype.type = OBJECT_HOME;
 Home.prototype.step = function(dt) {
   var collision = this.board.collide(this,OBJECT_FROG);
   if(collision) {
+    this.board.remove(this);
     winGame();
   }
 

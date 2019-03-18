@@ -34,9 +34,10 @@ var playGame = function() {
 
   
 
-  board.add(new Frog());
+  
   board.add(new Water());
   board.add(new Home());
+  board.add(new Frog());
  //board.add(new Background());
   //board.add(new Level(level1,winGame));
   Game.setBoard(1,board);
