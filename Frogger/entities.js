@@ -66,10 +66,11 @@ Background.prototype.step = function() {}
 //FROG
 
 var Frog = function() {
-    this.setup('frog', {vx: 0, reloadTime: 0.25, zIndex: 4});
+    this.setup('frog', {vx: 0, reloadTime: 0.25, zIndex: 4, frame: 0});
     this.reload = this.reloadTime;
     this.x = Game.width / 2 - this.w / 2;
     this.y = Game.height - this.h - 10;
+    this.angle = 0;
 }
 
 Frog.prototype = new Sprite();
@@ -92,15 +93,19 @@ Frog.prototype.step = function(dt) {
         if (Game.keys['up']) {
             this.reload = this.reloadTime;
             this.y -= 48;
+            this.angle = 0;
         } else if (Game.keys['down']) {
             this.reload = this.reloadTime;
             this.y += 48;
+            this.angle = 180;
         } else if (Game.keys['right'] && this.x + this.w <= Game.width - this.w) {
             this.reload = this.reloadTime;
             this.x += 40;
+            this.angle = 90;
         } else if (Game.keys['left'] && this.x - this.w >= 0) {
             this.reload = this.reloadTime;
             this.x -= 40;
+            this.angle = -90;
         }
 
 
@@ -123,6 +128,32 @@ Frog.prototype.onObject = function(vObj) {
   this.vx = vObj;
 };
 
+Frog.prototype.draw = function(ctx) {
+
+    var s = SpriteSheet.map[this.sprite];
+
+    if(!this.frame) this.frame = 0;
+
+    rotation = this.angle * Math.PI / 180;
+
+    ctx.save();
+
+    ctx.translate(this.x + s.w / 2, this.y + s.h / 2);
+
+    ctx.rotate(rotation);
+
+    ctx.drawImage(SpriteSheet.image, s.sx + this.frame * s.w, 
+
+                     s.sy, 
+
+                     s.w, s.h,
+
+                    -s.w / 2, -s.h / 2, s.w, s.h);
+
+    ctx.restore();
+
+  };
+
 
 
 var objects = { //speed > 0 left->right, speed <0  right -> left
@@ -131,10 +162,10 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_yellow: {sprite: 'car_yellow',speed: 200},
     car_red: {sprite: 'car_red', speed: 250 },
     car_brown: {sprite: 'car_brown', speed: -300},
-    trunk1:{sprite: 'trunk1',speed: -50},
+    trunk1:{sprite: 'trunk1',speed: -70},
     trunk2:{sprite: 'trunk2',speed: 55},
     trunk3:{sprite: 'trunk3',speed: -45},
-    turtle:{sprite: 'turtle',speed: 40}
+    turtle:{sprite: 'turtle',speed: 70}
 };
 
 var Spawner = function(data) {
@@ -142,14 +173,22 @@ var Spawner = function(data) {
     this.obj = data[1];
     this.t = 0;
     this.zIndex = 0;
+    this.gapIni = 0;
+    this.ini = true;
 }
 Spawner.prototype = new Sprite();
 Spawner.prototype.draw = function() {};
 Spawner.prototype.step = function(dt) {
     this.t += dt;
-    if (this.t >= this.gap) {
-        this.board.add(Object.create(this.obj));
-        this.t -= this.gap;
+    if(this.ini == true){
+      this.board.add(Object.create(this.obj));
+      this.ini = false;
+    }
+    else{
+      if (this.t >= this.gap) {
+          this.board.add(Object.create(this.obj));
+          this.t -= this.gap;
+      }
     }
 };
 

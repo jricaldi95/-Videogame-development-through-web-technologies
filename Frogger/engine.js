@@ -68,6 +68,7 @@ var Game = new function() {
 
       // y actualizamos y dibujamos todas las entidades
       for(var i=0,len = boards.length;i<len;i++) {
+        console.log(boards[i]);
         if(boards[i]) { 
           boards[i].step(dt);
           boards[i].draw(Game.ctx);
