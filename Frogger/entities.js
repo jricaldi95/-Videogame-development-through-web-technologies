@@ -1,16 +1,16 @@
 var sprites = {
- frog:{sx: 0, sy: 340, w: 36, h: 45, frames: 1},
+ frog:{sx: 0, sy: 345, w: 36, h: 27, frames: 1},
  background:{sx: 422, sy: 0, w: 552, h: 625, frames: 1 },
- car_blue: { sx: 0, sy: 0, w: 100, h: 51, frames: 1 },
- car_green: { sx: 105, sy: 0, w: 100, h: 51, frames: 1 },
- car_yellow: { sx: 205, sy: 0, w: 98, h: 51, frames: 1 },
- car_red: { sx: 0, sy: 54, w: 140, h: 58, frames: 1 },
- car_brown: { sx: 140, sy: 55, w: 180, h: 55, frames: 1 },
- trunk1:{sx: 260, sy: 167, w: 140, h: 51, frames: 1},
- trunk2:{sx: 0, sy: 116, w: 200, h: 51, frames: 1},
- trunk3:{sx: 0, sy: 163, w: 268, h: 51, frames: 1},
- turtle:{sx: 0, sy: 284, w: 54, h: 50, frames: 1},
- death:{sx: 215, sy: 116, w: 47, h: 50, frames: 4}
+ car_blue: { sx: 8, sy: 7, w: 90, h: 45, frames: 1 },
+ car_green: { sx: 109, sy: 7, w: 90, h: 45, frames: 1 },
+ car_yellow: { sx: 214, sy: 7, w: 94, h: 45, frames: 1 },
+ car_red: { sx: 7, sy: 62, w: 124, h: 45, frames: 1 },
+ car_brown: { sx: 147, sy: 63, w: 200, h: 45, frames: 1 },
+ trunk1:{sx: 270, sy: 170, w: 132, h: 43, frames: 1},
+ trunk2:{sx: 9, sy: 121, w: 193, h: 43, frames: 1},
+ trunk3:{sx: 9, sy: 170, w: 248, h: 43, frames: 1},
+ turtle:{sx: 5, sy: 288, w: 50, h: 47, frames: 1},
+ death:{sx: 212, sy: 123, w: 47, h: 45, frames: 4}
  
 };
 
@@ -54,7 +54,7 @@ Sprite.prototype.hit = function(damage) {
 
 var Background = function(){
 
-   this.setup('background');
+   this.setup('background', {zIndex: 0});
    this.x = 0;
    this.y = 0;
  }
@@ -66,10 +66,10 @@ Background.prototype.step = function() {}
 //FROG
 
 var Frog = function() {
-    this.setup('frog', {vx: 0, reloadTime: 0.25});
+    this.setup('frog', {vx: 0, reloadTime: 0.25, zIndex: 4});
     this.reload = this.reloadTime;
     this.x = Game.width / 2 - this.w / 2;
-    this.y = Game.height - this.h;
+    this.y = Game.height - this.h - 10;
 }
 
 Frog.prototype = new Sprite();
@@ -131,16 +131,17 @@ var objects = { //speed > 0 left->right, speed <0  right -> left
     car_yellow: {sprite: 'car_yellow',speed: 200},
     car_red: {sprite: 'car_red', speed: 250 },
     car_brown: {sprite: 'car_brown', speed: -300},
-    trunk1:{sprite: 'trunk1',speed: -20},
-    trunk2:{sprite: 'trunk2',speed: 30},
-    trunk3:{sprite: 'trunk3',speed: -40},
-    turtle:{sprite: 'turtle',speed: 35}
+    trunk1:{sprite: 'trunk1',speed: -50},
+    trunk2:{sprite: 'trunk2',speed: 55},
+    trunk3:{sprite: 'trunk3',speed: -45},
+    turtle:{sprite: 'turtle',speed: 40}
 };
 
 var Spawner = function(data) {
     this.gap = data[0];
     this.obj = data[1];
     this.t = 0;
+    this.zIndex = 0;
 }
 Spawner.prototype = new Sprite();
 Spawner.prototype.draw = function() {};
@@ -155,11 +156,11 @@ Spawner.prototype.step = function(dt) {
 ///CAR
 var count = 0;
 var Car = function(sprite,speed) {
-  this.setup(sprite);
+  this.setup(sprite, {zIndex: 5});
    count++;
   this.speed = speed;
-  this.x = (speed > 0) ? 0 : Game.width;
-  this.y = Game.height - 48 - (count * 50);
+  this.x = (speed > 0) ? -this.w : Game.width;
+  this.y = Game.height - 48 - (count * 48);
   if (count == 5){
     count = 0;
   }
@@ -187,9 +188,9 @@ Car.prototype.step = function(dt) {
 //TRUNK
 var row = 0;
 var Trunk = function(sprite,speed) {
-  this.setup(sprite);
+  this.setup(sprite, {zIndex: 1});
   this.speed = speed;
-  this.x = (speed > 0) ? 0 : Game.width;
+  this.x = (speed > 0) ? -this.w : Game.width;
   this.y = Game.height - (48*7) - ((2 * row + 1) * 48);
     row++;
   if (row > 2){
@@ -219,9 +220,9 @@ Trunk.prototype.step = function(dt) {
 //TURTLE
 var row_t = 1;
 var Turtle = function(sprite,speed) {
-  this.setup(sprite);
+  this.setup(sprite, {zIndex: 1});
   this.speed = speed;
-  this.x = (speed > 0) ? 0 : Game.width;
+  this.x = (speed > 0) ? -this.w : Game.width;
   this.y = Game.height - (48*7) - ((2 * row_t) * 48);
     row_t++;
   if (row_t > 2){
@@ -254,6 +255,7 @@ var Water = function() {
   this.h = Game.height - ( 48 * 8);
   this.x = 0;
   this.y = 49;
+  this.zIndex = 0;
 }
 
 Water.prototype = new Sprite();
@@ -270,6 +272,7 @@ var Home = function() {
   this.h = Game.height - ( 48 * 12) ;
   this.x = 0;
   this.y = 0;
+  this.zIndex = 0;
 }
 
 Home.prototype = new Sprite();
@@ -288,7 +291,7 @@ Home.prototype.step = function(dt) {
 
 //DEATH
 var Death = function(centerX, centerY) {
-  this.setup('death', {frame: 0});
+  this.setup('death', {frame: 0, zIndex: 5});
   this.x = centerX;
   this.y = centerY;
   this.subFrame = 0;

@@ -18,7 +18,6 @@ var Game = new function() {
     //setInterval(this.loop, 1000/fps);
     requestAnimationFrame(Game.loop);
 
-
     SpriteSheet.load(sprite_data,callback);
   };
 
@@ -200,6 +199,10 @@ var GameBoard = function() {
     obj.board=this; 
     this.objects.push(obj); 
     this.cnt[obj.type] = (this.cnt[obj.type] || 0) + 1;
+    //funcion para ordenar sprites
+    this.objects.sort(function(a, b) {
+      return a.zIndex - b.zIndex;
+    });
     return obj; 
   };
 
