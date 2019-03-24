@@ -34,6 +34,14 @@ window.addEventListener("load", function() {
         });
     };
 
+    var RestartLevel1 = function() {
+
+        Q.clearStages();
+        Q.stageScene("level1");
+
+    };
+
+
     Q.scene("mainTitle", function(stage) {
         var container = stage.insert(new Q.UI.Container({
             x: Q.width / 2,
@@ -60,11 +68,42 @@ window.addEventListener("load", function() {
 
     Q.scene("level1", function(stage) {
         Q.stageTMX("level.tmx", stage);
+        var mario = stage.insert(new Q.Mario());
 
-        stage.add("viewport");
-        stage.viewport.offsetX = 150;
-        stage.viewport.offsetY = 380;
+        stage.add("viewport").follow(mario);
+        stage.viewport.offsetX = -120;
+        stage.viewport.offsetY = 160;
         
+       // stage.insert(new Goomba(x = 400, y = 380));
+    });
+
+
+
+
+    //MARIO
+
+    Q.Sprite.extend("Mario",{
+
+        init: function(p) {
+       
+            this._super(p, {
+                sheet: "marioR", 
+                frame: 0,
+                x: 150, 
+                y: 380
+            });
+
+            this.add('2d, platformerControls');
+          
+            console.log(this.p.y);
+            if (this.p.y > 700) {
+
+                this.destroy();
+               
+                RestartLevel1();
+            }
+
+        }
     });
 
 });
