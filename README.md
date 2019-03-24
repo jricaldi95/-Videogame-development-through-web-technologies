@@ -11,7 +11,7 @@ Projects of the subjet DVI (Desarrollo de videojuegos mediante tecnologías web)
 * **Yi Teng Wang** - [Yiiiteng](https://github.com/Yiiiteng)
 
 ## Practices
-* [Memory Game](https://jricaldi95.github.io/DVI/practica1/)
+* [Memory Game](https://jricaldi95.github.io/DVI/MemoryGame/)
 * [Frogger](https://jricaldi95.github.io/DVI/Frogger/)
 
   Implemented functions:
@@ -25,3 +25,5 @@ Projects of the subjet DVI (Desarrollo de videojuegos mediante tecnologías web)
   - Death animation
   - Menu and conditions of completion
   - Spawner of cars and trunks
+
+* [SuperMario](https://jricaldi95.github.io/DVI/SuperMario/)
