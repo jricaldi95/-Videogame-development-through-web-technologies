@@ -7,7 +7,7 @@ window.addEventListener("load", function() {
         .setup({
             width: 320, // width of created canvas
             height: 480, // height of created canvas
-            maximize: false // set to true to maximize to screen, "touch" to maximize on touch devices
+            maximize: true // set to true to maximize to screen, "touch" to maximize on touch devices
         }).controls().touch();
 
     Q.load(["coin.ogg", "music_die.ogg", "music_level_complete.ogg", "music_main.ogg"], function() {
@@ -139,13 +139,33 @@ window.addEventListener("load", function() {
             x: 1990,
             y: 380
         }));
+
+        stage.insert(new Q.Coin({
+            x: 350,
+            y: 500
+        }));
         
     });
 
 
-
-
     //MARIO
+
+    // Mario animations
+    Q.animations("anim_mario", { 
+        run: {
+            frames: [0, 1, 2],
+            rate: 1 / 10
+        },
+        stand: {
+            frames: [0],
+            rate: 1 / 50
+        },
+        jump: {
+            frames: [0],
+            rate: 1 / 50,
+            loop: false
+        }
+    });
 
     Q.Sprite.extend("Mario", {
         init: function(p) {
@@ -154,45 +174,54 @@ window.addEventListener("load", function() {
                 frame: 0,
                 x: 150,
                 y: 380,
+                sprite: "anim_mario"
             });
 
-            this.add("2d, platformerControls");
+            this.add("2d, platformerControls, animation, tween");
 
         },
         step: function(dt) {
             if (this.p.vx > 0) { // derecha
                 if (this.p.landed > 0) {
                     this.p.sheet = "marioR";
+                    this.play("run");
                 } 
                 else {
                     this.p.sheet = "marioJumpR";
+                    this.play("jump");
                 }
                 this.p.direction = "right";
             } 
             else if (this.p.vx < 0) { // izquierda
                 if (this.p.landed > 0) {
                     this.p.sheet = "marioL";
+                    this.play("run");
                 } 
                 else {
                     this.p.sheet = "marioJumpL";
+                    this.play("jump");
                 }
                 this.p.direction = "left";
             } 
             else {
                 if (this.p.direction == "right") {
                     this.p.sheet = "marioR";
+                    this.play("stand");
                 } 
                 else {
                     this.p.sheet = "marioL";
+                    this.play("stand");
                 }
             }
 
             if (this.p.vy != 0) {
                 if (this.p.direction == "right") {
                     this.p.sheet = "marioJumpR";
+                    this.play("jump");
                 } 
                 else {
                     this.p.sheet = "marioJumpL";
+                    this.play("jump");
                 }
             }
 
@@ -205,6 +234,8 @@ window.addEventListener("load", function() {
 
     });
 
+
+    // Princess
 
     Q.Sprite.extend("Princess", {
         init: function(p) {
@@ -224,6 +255,40 @@ window.addEventListener("load", function() {
                 Q.stageScene("winGame", 1, {
                     label: "You win!"
                 });
+            });
+        }
+    });
+
+
+
+    // Coin
+
+    Q.Sprite.extend("Coin", {
+        init: function(p) {
+            this._super(p, {
+                sheet: "coin",
+                z: 0,
+                hit: false,
+                angle: 0,
+                sensor: true,
+                frame: 0
+            });
+
+            this.add("tween, animation");
+
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Mario") && !this.p.hit) {
+                    this.p.hit = true;
+                    Q.audio.play("coin.ogg");
+                    this.animate({
+                        y: this.p.y - 50,
+                        angle: 0
+                    }, 0.3, Q.Easing.Linear, {
+                        callback: function() {
+                            this.destroy();
+                        }
+                    });
+                }
             });
         }
     });
