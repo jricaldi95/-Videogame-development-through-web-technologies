@@ -7,7 +7,7 @@ window.addEventListener("load", function() {
         .setup({
             width: 320, // width of created canvas
             height: 480, // height of created canvas
-            scaleToFit: true
+            scaleToFit: false
         }).touch().controls();
 
     Q.load(["coin.ogg", "music_die.ogg", "music_level_complete.ogg", "music_main.ogg"], function() {
@@ -142,7 +142,7 @@ window.addEventListener("load", function() {
 
         stage.insert(new Q.Coin({
             x: 350,
-            y: 475
+            y: 450
         }));
 
         stage.insert(new Q.Goomba({
@@ -152,7 +152,7 @@ window.addEventListener("load", function() {
 
         stage.insert(new Q.Bloopa({
             x: 450,
-            y: 300
+            y: 475
         }));
         
     });
@@ -184,6 +184,7 @@ window.addEventListener("load", function() {
                 frame: 0,
                 x: 150,
                 y: 380,
+                jumpSpeed: -410,
                 sprite: "anim_mario"
             });
 
@@ -337,32 +338,10 @@ window.addEventListener("load", function() {
                 sheet: 'goomba',
                 sprite: "anim_goomba",
                 frame: 0,
-                vx: 100 });
+                vx: 200 });
           
-            this.add('2d, aiBounce, animation');
-            this.play("move");
+            this.add('2d, aiBounce, animation, defaultEnemy');
 
-            this.on("bump.left,bump.right,bump.bottom",function(collision) {
-
-                if(collision.obj.isA("Mario")) {
-                    Q.stageScene("endGame",1, { label: "You Died" });
-                    collision.obj.destroy();
-                }
-
-            });
-            // If the enemy gets hit on the top, destroy it
-            // and give the user a "hop"
-            this.on("bump.top",function(collision) {
-
-                if(collision.obj.isA("Mario")) {
-                     this.play("die");
-                      collision.obj.p.vy = -200;
-                 }
-            });
-
-            this.on("death_event", this, function() {
-                    this.destroy();
-            });
         }  
         
     });
@@ -390,22 +369,17 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sheet: 'bloopa',
                 sprite: "anim_bloopa",
-                frame: 0,
-                x: 450,
-                y: 328,
-                vy: -400 });
+                frame: 0});
           
-            this.add('2d, animation');
-            this.play("move");
+            this.add('2d, animation, defaultEnemy');
 
-            this.on("bump.left,bump.right,bump.bottom",function(collision) {
-
-                if(collision.obj.isA("Mario")) {
-                    Q.stageScene("endGame",1, { label: "You Died" });
-                    collision.obj.destroy();
+            this.on("hit", function(collision) {
+                //Si no colisiona con mario
+                if (!collision.obj.isA("Mario")) {
+                    this.p.vy = -350;
                 }
-
             });
+
             // If the enemy gets hit on the top, destroy it
             // and give the user a "hop"
             this.on("bump.top",function(collision) {
@@ -416,12 +390,34 @@ window.addEventListener("load", function() {
 
                  }
             });
-
-            this.on("death_event", this, function() {
-                this.destroy();
-            });  
         }
           
+    });
+
+    Q.component("defaultEnemy", {
+        added: function() {
+            this.entity.play("move");
+
+            this.entity.on("bump.top", function(collision) {
+                if (collision.obj.isA("Mario")) {
+                    this.play("die");
+                     //move enemy
+                    this.p.vy = -300;
+                    //collision.obj.p.vy = -200;
+                }
+            });
+
+            this.entity.on("bump.left, bump.right, bump.bottom", function(collision) {
+                if (collision.obj.isA("Mario")) {
+                    Q.stageScene("endGame",1, { label: "You Died" });
+                    collision.obj.destroy();
+                }
+            });
+
+            this.entity.on("death_event", this, function() {
+                this.entity.destroy();
+            });
+        }
     });
 
 
