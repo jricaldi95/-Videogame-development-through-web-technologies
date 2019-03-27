@@ -1424,9 +1424,10 @@ var Quintus = exportTarget[key] = function(opts) {
       var winH = window.innerHeight*factor;
       var winRatio = winW/winH;
       var gameRatio = Q.el.width/Q.el.height;
-      var scaleRatio = gameRatio < winRatio ? winH/Q.el.height : winW/Q.el.width;
-      var scaledW = Q.el.width * scaleRatio;
-      var scaledH = Q.el.height * scaleRatio;
+      var scaleRatioW =  winW/Q.el.width;
+      var scaleRatioH =  winH/Q.el.height;
+      var scaledW = Q.el.width * scaleRatioW;
+      var scaledH = Q.el.height * scaleRatioH;
 
       Q.el.style.width = scaledW + "px";
       Q.el.style.height = scaledH + "px";

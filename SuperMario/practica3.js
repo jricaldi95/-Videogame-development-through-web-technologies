@@ -7,8 +7,8 @@ window.addEventListener("load", function() {
         .setup({
             width: 320, // width of created canvas
             height: 480, // height of created canvas
-            maximize: false // set to true to maximize to screen, "touch" to maximize on touch devices
-        }).controls().touch();
+            scaleToFit: true
+        }).touch().controls();
 
     Q.load(["coin.ogg", "music_die.ogg", "music_level_complete.ogg", "music_main.ogg"], function() {
 
