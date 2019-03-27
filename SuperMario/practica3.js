@@ -144,6 +144,16 @@ window.addEventListener("load", function() {
             x: 350,
             y: 475
         }));
+
+        stage.insert(new Q.Goomba({
+            x: 1600,
+            y: 380
+        }));
+
+        stage.insert(new Q.Bloopa({
+            x: 450,
+            y: 300
+        }));
         
     });
 
@@ -303,6 +313,115 @@ window.addEventListener("load", function() {
         step: function(dt){
             this.play("move");
         }
+    });
+
+    // Goomba
+
+    // Goomba animations
+    Q.animations("anim_goomba", { 
+        move: {
+            frames: [0, 1],
+            rate: 1 / 6
+        },
+        die: {
+            frames: [2],
+            rate: 1 / 10,
+            loop: false,
+            trigger: "death_event"
+        }
+    });
+
+    Q.Sprite.extend("Goomba",{
+        init: function(p) {
+            this._super(p, { 
+                sheet: 'goomba',
+                sprite: "anim_goomba",
+                frame: 0,
+                vx: 100 });
+          
+            this.add('2d, aiBounce, animation');
+            this.play("move");
+
+            this.on("bump.left,bump.right,bump.bottom",function(collision) {
+
+                if(collision.obj.isA("Mario")) {
+                    Q.stageScene("endGame",1, { label: "You Died" });
+                    collision.obj.destroy();
+                }
+
+            });
+            // If the enemy gets hit on the top, destroy it
+            // and give the user a "hop"
+            this.on("bump.top",function(collision) {
+
+                if(collision.obj.isA("Mario")) {
+                     this.play("die");
+                      collision.obj.p.vy = -200;
+                 }
+            });
+
+            this.on("death_event", this, function() {
+                    this.destroy();
+            });
+        }  
+        
+    });
+
+
+    // Bloopa
+
+    // Bloopa animations
+    Q.animations("anim_bloopa", { 
+        move: {
+            frames: [0, 1],
+            rate: 1 / 6
+        },
+        die: {
+            frames: [2],
+            rate: 1 / 10,
+            loop: false,
+            trigger: "death_event"
+        }
+
+    });
+
+    Q.Sprite.extend("Bloopa",{
+        init: function(p) {
+            this._super(p, { 
+                sheet: 'bloopa',
+                sprite: "anim_bloopa",
+                frame: 0,
+                x: 450,
+                y: 328,
+                vy: -400 });
+          
+            this.add('2d, animation');
+            this.play("move");
+
+            this.on("bump.left,bump.right,bump.bottom",function(collision) {
+
+                if(collision.obj.isA("Mario")) {
+                    Q.stageScene("endGame",1, { label: "You Died" });
+                    collision.obj.destroy();
+                }
+
+            });
+            // If the enemy gets hit on the top, destroy it
+            // and give the user a "hop"
+            this.on("bump.top",function(collision) {
+
+                if(collision.obj.isA("Mario")) {
+                     this.play("die");
+                     collision.obj.p.vy = -200;
+
+                 }
+            });
+
+            this.on("death_event", this, function() {
+                this.destroy();
+            });  
+        }
+          
     });
 
 
