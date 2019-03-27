@@ -7,7 +7,7 @@ window.addEventListener("load", function() {
         .setup({
             width: 320, // width of created canvas
             height: 480, // height of created canvas
-            maximize: true // set to true to maximize to screen, "touch" to maximize on touch devices
+            maximize: false // set to true to maximize to screen, "touch" to maximize on touch devices
         }).controls().touch();
 
     Q.load(["coin.ogg", "music_die.ogg", "music_level_complete.ogg", "music_main.ogg"], function() {
@@ -142,7 +142,7 @@ window.addEventListener("load", function() {
 
         stage.insert(new Q.Coin({
             x: 350,
-            y: 500
+            y: 475
         }));
         
     });
@@ -263,10 +263,19 @@ window.addEventListener("load", function() {
 
     // Coin
 
+    // Coin animations
+    Q.animations("anim_coin", { 
+        move: {
+            frames: [0, 1, 2],
+            rate: 1 / 6
+        }
+    });
+
     Q.Sprite.extend("Coin", {
         init: function(p) {
             this._super(p, {
                 sheet: "coin",
+                sprite: "anim_coin",
                 z: 0,
                 hit: false,
                 angle: 0,
@@ -290,6 +299,9 @@ window.addEventListener("load", function() {
                     });
                 }
             });
+        },
+        step: function(dt){
+            this.play("move");
         }
     });
 
