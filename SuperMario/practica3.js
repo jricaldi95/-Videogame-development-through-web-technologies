@@ -100,6 +100,9 @@ window.addEventListener("load", function() {
 
     Q.scene("winGame", function(stage) {
 
+        Q.audio.stop();
+        Q.audio.play("music_level_complete.ogg");
+
         var container = stage.insert(new Q.UI.Container({
             x: Q.width / 2,
             y: Q.height / 2,
@@ -150,8 +153,18 @@ window.addEventListener("load", function() {
             y: 380
         }));
 
+        stage.insert(new Q.Goomba({
+            x: 1700,
+            y: 380
+        }));
+
         stage.insert(new Q.Bloopa({
             x: 450,
+            y: 475
+        }));
+
+        stage.insert(new Q.Bloopa({
+            x: 700,
             y: 475
         }));
         
@@ -241,7 +254,29 @@ window.addEventListener("load", function() {
                 Q.stageScene("endGame", 1, { label: "You died" });
                 //RestartLevel1();
             }
-        }
+
+            if (this.dead== true){
+                this.p.sheet = "marioDie";
+               
+                this.animate({
+                    y: this.p.y - 30,
+                }, 0.3, Q.Easing.Linear, {
+                    callback: function() {
+                       this.destroy();
+                    }
+                });
+            }
+
+
+        },
+        death: function(){
+            this.del("platformerControls");
+            Q.audio.play("music_die.ogg");
+            this.p.vx = 0;
+            this.p.vy = 0;
+            this.dead = true;
+ 
+        }  
 
     });
 
@@ -326,7 +361,7 @@ window.addEventListener("load", function() {
         },
         die: {
             frames: [2],
-            rate: 1 / 10,
+            rate: 1 / 12,
             loop: false,
             trigger: "death_event"
         }
@@ -338,7 +373,7 @@ window.addEventListener("load", function() {
                 sheet: 'goomba',
                 sprite: "anim_goomba",
                 frame: 0,
-                vx: 200 });
+                vx: 150 });
           
             this.add('2d, aiBounce, animation, defaultEnemy');
 
@@ -353,7 +388,7 @@ window.addEventListener("load", function() {
     Q.animations("anim_bloopa", { 
         move: {
             frames: [0, 1],
-            rate: 1 / 6
+            rate: 1 / 4
         },
         die: {
             frames: [2],
@@ -376,7 +411,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 //Si no colisiona con mario
                 if (!collision.obj.isA("Mario")) {
-                    this.p.vy = -350;
+                    this.p.vy = -270;
                 }
             });
 
@@ -409,12 +444,14 @@ window.addEventListener("load", function() {
 
             this.entity.on("bump.left, bump.right, bump.bottom", function(collision) {
                 if (collision.obj.isA("Mario")) {
+                    collision.obj.death();
                     Q.stageScene("endGame",1, { label: "You Died" });
-                    collision.obj.destroy();
+                    //collision.obj.destroy();
                 }
             });
 
             this.entity.on("death_event", this, function() {
+                this.entity.p.vx = 0;
                 this.entity.destroy();
             });
         }
