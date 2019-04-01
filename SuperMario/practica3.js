@@ -25,20 +25,21 @@ window.addEventListener("load", function() {
 
 
     });
+
     var StartLevel1 = function() {
         Q.clearStages();
         Q.audio.stop();
         Q.stageScene("level1");
+        Q.stageScene("HUD", 1);
         Q.audio.play("music_main.ogg", {
             loop: true
         });
     };
 
     var RestartLevel1 = function() {
-
         Q.clearStages();
         Q.stageScene("level1");
-
+        Q.stageScene("HUD", 1);
     };
 
 
@@ -47,6 +48,8 @@ window.addEventListener("load", function() {
             x: Q.width / 2,
             y: Q.height / 2
         }));
+
+        Q.state.set("coins", 0);
 
         //Button
         var button = container.insert(new Q.UI.Button({
@@ -66,6 +69,7 @@ window.addEventListener("load", function() {
     });
 
     Q.scene("endGame", function(stage) {
+
         var container = stage.insert(new Q.UI.Container({
             x: Q.width / 2,
             y: Q.height / 2,
@@ -84,6 +88,8 @@ window.addEventListener("load", function() {
             y: -10 - button.p.h,
             label: stage.options.label
         }));
+
+        Q.state.set("coins", 0);
 
         button.on("click", function() {
             StartLevel1();
@@ -122,7 +128,13 @@ window.addEventListener("load", function() {
             label: stage.options.label
         }));
 
+        Q.state.set("coins", 0);
+
         button.on("click", function() {
+            StartLevel1();
+        });
+
+        Q.input.on("confirm", this, function() {
             StartLevel1();
         });
 
@@ -139,13 +151,28 @@ window.addEventListener("load", function() {
         stage.viewport.offsetY = 152;
 
         stage.insert(new Q.Princess({
-            x: 1990,
+            x: 2100,
             y: 380
         }));
 
         stage.insert(new Q.Coin({
             x: 350,
             y: 450
+        }));
+        
+        stage.insert(new Q.Coin({
+            x: 650,
+            y: 450
+        }));
+
+        stage.insert(new Q.Coin({
+            x: 1207,
+            y: 375
+        }));
+
+        stage.insert(new Q.Goomba({
+            x: 900,
+            y: 480
         }));
 
         stage.insert(new Q.Goomba({
@@ -160,14 +187,45 @@ window.addEventListener("load", function() {
 
         stage.insert(new Q.Bloopa({
             x: 450,
-            y: 475
+            y: 470
         }));
 
         stage.insert(new Q.Bloopa({
-            x: 700,
-            y: 475
+            x: 550,
+            y: 470
+        }));
+
+        stage.insert(new Q.Bloopa({
+            x: 1900,
+            y: 380
         }));
         
+    });
+
+    Q.scene("HUD", function(stage) {
+        var container = stage.insert(new Q.UI.Container({
+            x: 0,
+            y: 0
+        }));
+        var coins = container.insert(new Q.Coins());
+
+    });
+
+    /* UI */
+
+    Q.UI.Text.extend("Coins", {
+        init: function(p) {
+            this._super({
+                label: "Coins: " + Q.state.p.coins,
+                x: Q.width / 2,
+                y: 0
+            });
+
+            Q.state.on("change.coins", this, "coins");
+        },
+        coins: function(coins) {
+            this.p.label = "Coins: " + coins;
+        }
     });
 
 
@@ -250,12 +308,12 @@ window.addEventListener("load", function() {
             }
 
             if (this.p.y > 700) {
+                this.death();
                 this.destroy();
                 Q.stageScene("endGame", 1, { label: "You died" });
-                //RestartLevel1();
             }
 
-            if (this.dead== true){
+            if (this.dead == true){
                 this.p.sheet = "marioDie";
                
                 this.animate({
@@ -334,6 +392,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Mario") && !this.p.hit) {
                     this.p.hit = true;
+                    Q.state.inc("coins", 1);
                     Q.audio.play("coin.ogg");
                     this.animate({
                         y: this.p.y - 50,
