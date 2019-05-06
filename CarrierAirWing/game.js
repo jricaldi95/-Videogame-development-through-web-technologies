@@ -13,8 +13,8 @@ window.addEventListener("load", function() {
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
     Q.loadTMX("level.tmx", function() {
-        Q.load("planes.png, planes.json, enemies.png, enemies.json, mainTitle.png", function() {
-            Q.compileSheets("planes.png", "planes.json");
+        Q.load("planes3.png, planes3.json, enemies.png, enemies.json, mainTitle.png", function() {
+            Q.compileSheets("planes3.png", "planes3.json");
             Q.compileSheets("enemies.png", "enemies.json");
             Q.stageScene("mainTitle");
         });
@@ -66,15 +66,18 @@ window.addEventListener("load", function() {
       Q.animations("anim_player", { 
         up: {
             frames: [5,4,3,2,1,0],
-            rate: 1 / 5
+            rate: 1 / 8,
+            loop: false
         },
         stand: {
             frames: [6],
-            rate: 1 / 5
+            rate: 1 / 8,
+            loop: false
         },
         down: {
             frames: [7,8,9,10],
-            rate: 1 / 5
+            rate: 1 / 8,
+            loop: false
         },
         fire: {
             frames: [0,1,2],
