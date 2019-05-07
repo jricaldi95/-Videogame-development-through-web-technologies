@@ -13,8 +13,8 @@ window.addEventListener("load", function() {
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
     Q.loadTMX("level.tmx", function() {
-        Q.load("planes3.png, planes3.json, enemies.png, enemies.json, mainTitle.png", function() {
-            Q.compileSheets("planes3.png", "planes3.json");
+        Q.load("planes.png, planes.json, enemies.png, enemies.json, mainTitle.png", function() {
+            Q.compileSheets("planes.png", "planes.json");
             Q.compileSheets("enemies.png", "enemies.json");
             Q.stageScene("mainTitle");
         });
