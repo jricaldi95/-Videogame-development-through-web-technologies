@@ -1,4 +1,5 @@
 {
 	"tomcat":{"sx":5,"sy":10,"tileW":90,"tileH":87,"frames":11},
+	"bullet":{"sx":10,"sy":103,"tileW":30,"tileH":20,"frames":3},
 	"hornet":{"sx":32,"sy":386,"tileW":50,"tileH":26,"frames":11}
 }

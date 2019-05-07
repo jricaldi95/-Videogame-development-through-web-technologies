@@ -24,7 +24,7 @@ window.addEventListener("load", function() {
 
      var StartLevel1 = function() {
         Q.clearStages();
-        Q.audio.stop();
+        //Q.audio.stop();
         Q.stageScene("level1");
     };
 
@@ -45,6 +45,7 @@ window.addEventListener("load", function() {
         button.on("click", function() {
             StartLevel1();
         });
+
         Q.input.on("confirm", this, function() {
             StartLevel1();
         });
@@ -54,16 +55,14 @@ window.addEventListener("load", function() {
      Q.scene("level1", function(stage) {
         Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
-
-        //stage.add("viewport").follow(player);
-        //stage.viewport.offsetX = -120;
-        //stage.viewport.offsetY = 95;
         
     });
 
      Q.gravityY = 0;
 
-      Q.animations("anim_player", { 
+     /********** Player **********/
+
+    Q.animations("anim_player", { 
         up: {
             frames: [5,4,3,2,1,0],
             rate: 1 / 8,
@@ -78,11 +77,6 @@ window.addEventListener("load", function() {
             frames: [7,8,9,10],
             rate: 1 / 8,
             loop: false
-        },
-        fire: {
-            frames: [0,1,2],
-            rate: 1/30,
-            trigger: "fired"
         }
     });
 
@@ -100,21 +94,10 @@ window.addEventListener("load", function() {
                 sprite:"anim_player"
             });
 
-            this.add("animation,tween");
+            this.add("animation");
             
              Q.input.on("fire",this,"shoot");
         },
-        shoot: function() {
-            var p = this.p;
-            this.stage.insert(new Q.Bullet({
-                sheet:"inicial",
-                x: p.x,
-                y: p.y - p.w/2,
-                vy: -200
-            }))
-        
-         },
-    
         step: function(dt) {
             /**
              * Comprar si "LEFT" está siendo pulsado y si el ala derecha del jugador está dentro del canvas.
@@ -130,37 +113,58 @@ window.addEventListener("load", function() {
 
             if (Q.inputs['up'] && (this.p.y - this.p.h/2) > 0) {
                  this.p.vy = -this.p.speed;
-                 //this.p.sheet = "tomcatUp";
                  this.play("up");
             } else if (Q.inputs['down'] && (this.p.y + this.p.h/2) < Q.height) {
                 this.p.vy = this.p.speed;
-                //this.p.sheet = "tomcatDown";
                 this.play("down");
             } else { 
                 this.p.vy = 0;
-                //this.p.sheet = "tomcatDown";
                 this.play("stand");
-
-            }
-
-            if(Q.inputs['space']){
-                this.shoot();
             }
  
             this.p.x  += this.p.vx * dt;
             this.p.y  += this.p.vy * dt;
 
-           // Q.input.on("fire", this, "shoot");
         },
         shoot: function() {
             this.stage.insert(new Q.Bullet({
-                x: this.p.x,
-                y: this.p.y - this.p.w/2,
-                vy: -200
+                x: this.p.x + this.p.w/2,
+                y: this.p.y,
+                vx: 200
             }))
         }
 
     });
+
+    /********** Bullet **********/
+
+    Q.animations("anim_bullet", { 
+        fire: {
+            frames: [0],
+            rate: 1 / 8,
+            loop: false
+        }
+    });
+
+     Q.Sprite.extend("Bullet", {
+                init: function(p) {
+                    this._super(p, {
+                        sheet: "bullet",
+                        frame: 0,
+                        sprite: "anim_bullet"
+                        //type: SPRITE_BULLET,
+                        //collisionMask: SPRITE_ENEMY,
+                        //sensor: true
+                    });
+
+                    this.add("2d");
+                },
+                step: function(dt) {
+                    if (this.p.y >  Q.width) {
+                        this.destroy();
+                    }
+                }
+            })
 
 
 });
