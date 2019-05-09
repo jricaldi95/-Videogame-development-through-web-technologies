@@ -130,7 +130,7 @@ window.addEventListener("load", function() {
             this.stage.insert(new Q.Bullet({
                 x: this.p.x + this.p.w/2,
                 y: this.p.y,
-                vx: 200
+                vx: 1000
             }))
         }
 
@@ -160,7 +160,7 @@ window.addEventListener("load", function() {
                     this.add("2d");
                 },
                 step: function(dt) {
-                    if (this.p.y >  Q.width) {
+                    if (this.p.x >  Q.width) {
                         this.destroy();
                     }
                 }
