@@ -69,13 +69,8 @@ window.addEventListener("load", function() {
             loop: false
         },
         up_back: {
-            frames: [0,1,2,3,4,5],
-            rate: 1 / 5,
-            loop: false
-        },
-        stand: {
-            frames: [6],
-            rate: 1 / 8,
+            frames: [0,1,2,3,4,5,6],
+            rate: 1 / 10,
             loop: false
         },
         down: {
@@ -84,8 +79,8 @@ window.addEventListener("load", function() {
             loop: false
         },
         down_back: {
-            frames: [10,9,8,7],
-            rate: 1 / 5,
+            frames: [10,9,8,7,6],
+            rate: 1 / 10,
             loop: false
         }
 
@@ -102,7 +97,9 @@ window.addEventListener("load", function() {
                /* type:SPRITE_PLAYER,
                 collisionMask:SPRITE_ENEMY,*/
                 speed:200,
-                pressed: false,
+                pressedUp: false,
+                pressedDown: false,
+                blocked: false,
                 sprite:"anim_player"
             });
 
@@ -112,34 +109,85 @@ window.addEventListener("load", function() {
         },
         step: function(dt) {
 
-            //var pressed = false;
+            this.p.vx = 0;
+
+             if (Q.inputs['right'] && (this.p.x + this.p.w/2) < Q.width) {
+                this.p.vx = this.p.speed;
+            }
 
             if (Q.inputs['left'] && (this.p.x - this.p.w/2) > 0) {
                 this.p.vx = -this.p.speed;
-                    
-            } else if (Q.inputs['right'] && (this.p.x + this.p.w/2) < Q.width) {
-                this.p.vx = this.p.speed;
-            } else {
-                this.p.vx = 0;
+            }    
+                
+
+
+            /**************** ARRIBA ***********************/
+            if (Q.inputs['up'] && ((this.p.y - this.p.h / 2) > 0) && !this.p.blocked)  {
+
+
+                // 1- Si estaba pulsando antes la flecha hacia abajo
+                if(this.p.pressedDown){
+                    this.p.vy = 0; // No muevo la nave
+                    this.p.blocked = true;
+                    this.p.pressedDown = false;
+                    this.play("down_back");
+                }
+                else{
+                    // 2- Si no estaba pulsando abajo
+                    this.p.vy = -this.p.speed; // muevo la nave hacia arriba
+
+                    // 3- Si no estaba ya estaba pulsando arriba
+                    if(!this.p.pressedUp){
+                        this.p.pressedUp = true;
+                        this.play("up");
+                    }
+                }
             }
 
-            if (Q.inputs['up'] && (this.p.y - this.p.h / 2) > 0) {
-                this.p.vy = -this.p.speed;
-                if(!this.p.pressed){
-                    this.play("up");
-                    this.p.pressed = true;
-                }
 
-            } else if (Q.inputs['down'] && (this.p.y + this.p.h / 2) < Q.height) {
-                this.p.vy = this.p.speed;
-                if(!this.p.pressed){
-                    this.play("down");
-                    this.p.pressed = true;
+
+
+            /**************** ABAJO ***********************/
+            if (Q.inputs['down'] && ((this.p.y + this.p.h / 2) < Q.height) && !this.p.blocked) {
+
+                if(this.p.pressedUp){ //Si estaba pulsando arriba y le he dado hacia abajo
+                    this.p.vy = 0;
+                    this.p.blocked = true;
+                    this.p.pressedUp = false;
+                    this.play("up_back");
                 }
-            } else { 
+                else{
+                    this.p.vy = this.p.speed;
+
+                    if(!this.p.pressedDown){
+                        this.p.pressedDown = true;
+                        this.play("down");
+                    }
+                }
+            }
+
+
+            /***************** CASO BLOQUEO *******************/
+            if(this.p.blocked && ((Q.inputs['down'] && !Q.inputs['up']) || (!Q.inputs['down'] && Q.inputs['up']) ))
+                this.p.blocked = false;
+
+
+
+            if(!Q.inputs['up'] && !Q.inputs['down']) { 
                 this.p.vy = 0;
-                this.p.pressed = false;
-                this.play("stand");
+                this.p.blocked = false;
+
+                if(this.p.pressedUp)
+                    this.play("up_back");
+
+                this.p.pressedUp = false;
+
+                if(this.p.pressedDown)
+                    this.play("down_back");
+
+                this.p.pressedDown = false;
+
+                //this.play("stand");
             }
  
             this.p.x  += this.p.vx * dt;
