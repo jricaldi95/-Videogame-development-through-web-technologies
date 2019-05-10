@@ -68,6 +68,11 @@ window.addEventListener("load", function() {
             rate: 1 / 8,
             loop: false
         },
+        up_back: {
+            frames: [0,1,2,3,4,5],
+            rate: 1 / 5,
+            loop: false
+        },
         stand: {
             frames: [6],
             rate: 1 / 8,
@@ -77,7 +82,13 @@ window.addEventListener("load", function() {
             frames: [7,8,9,10],
             rate: 1 / 8,
             loop: false
+        },
+        down_back: {
+            frames: [10,9,8,7],
+            rate: 1 / 5,
+            loop: false
         }
+
     });
 
     Q.Sprite.extend("Player",{
@@ -91,17 +102,18 @@ window.addEventListener("load", function() {
                /* type:SPRITE_PLAYER,
                 collisionMask:SPRITE_ENEMY,*/
                 speed:200,
+                pressed: false,
                 sprite:"anim_player"
             });
 
             this.add("animation");
             
-             Q.input.on("fire",this,"shoot");
+            Q.input.on("fire",this,"shoot");
         },
         step: function(dt) {
-            /**
-             * Comprar si "LEFT" está siendo pulsado y si el ala derecha del jugador está dentro del canvas.
-             */
+
+            //var pressed = false;
+
             if (Q.inputs['left'] && (this.p.x - this.p.w/2) > 0) {
                 this.p.vx = -this.p.speed;
                     
@@ -111,14 +123,22 @@ window.addEventListener("load", function() {
                 this.p.vx = 0;
             }
 
-            if (Q.inputs['up'] && (this.p.y - this.p.h/2) > 0) {
-                 this.p.vy = -this.p.speed;
-                 this.play("up");
-            } else if (Q.inputs['down'] && (this.p.y + this.p.h/2) < Q.height) {
+            if (Q.inputs['up'] && (this.p.y - this.p.h / 2) > 0) {
+                this.p.vy = -this.p.speed;
+                if(!this.p.pressed){
+                    this.play("up");
+                    this.p.pressed = true;
+                }
+
+            } else if (Q.inputs['down'] && (this.p.y + this.p.h / 2) < Q.height) {
                 this.p.vy = this.p.speed;
-                this.play("down");
+                if(!this.p.pressed){
+                    this.play("down");
+                    this.p.pressed = true;
+                }
             } else { 
                 this.p.vy = 0;
+                this.p.pressed = false;
                 this.play("stand");
             }
  
