@@ -2,11 +2,9 @@
 
 Projects of the subjet DVI (Desarrollo de videojuegos mediante tecnologías web)
 
-## Author
+## Authors
 
 * **Javier Ricaldi Esquivel** - *Initial work* - [jricaldi95](https://github.com/jricaldi95)
-
-## Co - Author
 
 * **Yi Teng Wang** - [Yiiiteng](https://github.com/Yiiiteng)
 
@@ -27,3 +25,8 @@ Projects of the subjet DVI (Desarrollo de videojuegos mediante tecnologías web)
   - Spawner of cars and trunks
 
 * [SuperMario](https://jricaldi95.github.io/DVI/SuperMario/)
+
+
+## Final Project
+
+* [Carrier Air Wing](https://jricaldi95.github.io/DVI/CarrierAirWing/)
