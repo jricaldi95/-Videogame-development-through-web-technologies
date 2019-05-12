@@ -59,6 +59,7 @@ window.addEventListener("load", function() {
     });
 
      Q.gravityY = 0;
+     Q.gravityX = 0;
 
      /********** Player **********/
 
@@ -97,9 +98,12 @@ window.addEventListener("load", function() {
                /* type:SPRITE_PLAYER,
                 collisionMask:SPRITE_ENEMY,*/
                 speed:200,
+                pressedRight: false,
+                pressedLeft: false,
                 pressedUp: false,
                 pressedDown: false,
-                blocked: false,
+                blocked_UD: false,
+                blocked_RL: false,
                 sprite:"anim_player"
             });
 
@@ -111,35 +115,84 @@ window.addEventListener("load", function() {
 
             this.p.vx = 0;
 
-             if (Q.inputs['right'] && (this.p.x + this.p.w/2) < Q.width) {
-                this.p.vx = this.p.speed;
+
+            /**************** DERECHA *****************/
+            if (Q.inputs['right'] && (this.p.x + this.p.w/2) < Q.width){
+                
+                console.log("DERECHA");
+
+                if(!this.p.blocked_RL){
+
+                    if(this.p.pressedLeft){
+                       this.p.vx = 0;
+                       this.p.blocked_RL = true;
+                       this.p.pressedLeft = false;
+                    }
+                    else{
+                        // 2- Si no estaba pulsando abajo
+                        this.p.pressedRight = true;
+                        this.p.vx = this.p.speed;
+                    }
+                }
+                else{
+                    this.p.pressedRight = false;
+                }
+               
+               // console.log(this.p.vx);
             }
 
-            if (Q.inputs['left'] && (this.p.x - this.p.w/2) > 0) {
-                this.p.vx = -this.p.speed;
-            }    
+
+            /**************** IZQUIERDA *****************/
+            if (Q.inputs['left'] && (this.p.x - this.p.w/2) > 0){
+               
+               console.log("IZQUIERDA");
+
+               if(!this.p.blocked_RL){
+
+                    if(this.p.pressedRight){
+                       this.p.vx = 0;
+                       this.p.blocked_RL = true;
+                       this.p.pressedRight = false;
+                    }
+                    else{
+                         this.p.vx = -this.p.speed;
+                         this.p.pressedLeft = true;
+                    }
+                }
+                else{
+                    this.p.pressedLeft = false;
+                }
+            }
+
+
+            /**************** BLOQUEO RIGHT-LEFT *****************/
+            if(this.p.blocked_RL &&((!Q.inputs['left'] && Q.inputs['right']) || (Q.inputs['left'] && !Q.inputs['right']))) 
+               this.p.blocked_RL = false;
                 
 
 
-            /**************** ARRIBA ***********************/
-            if (Q.inputs['up'] && ((this.p.y - this.p.h / 2) > 0) && !this.p.blocked)  {
+            /**************** ARRIBA *****************/
+            if (Q.inputs['up'] && (this.p.y - this.p.h/2) > 0){
 
+                console.log("ARRIBA");
 
-                // 1- Si estaba pulsando antes la flecha hacia abajo
-                if(this.p.pressedDown){
-                    this.p.vy = 0; // No muevo la nave
-                    this.p.blocked = true;
-                    this.p.pressedDown = false;
-                    this.play("down_back");
-                }
-                else{
-                    // 2- Si no estaba pulsando abajo
-                    this.p.vy = -this.p.speed; // muevo la nave hacia arriba
+                if(!this.p.blocked_UD){
+                    // 1- Si estaba pulsando antes la flecha hacia abajo
+                    if(this.p.pressedDown){
+                        this.p.vy = 0; // No muevo la nave
+                        this.p.blocked_UD = true;
+                        this.p.pressedDown = false;
+                        this.play("down_back");
+                    }
+                    else{
+                        // 2- Si no estaba pulsando abajo
+                        this.p.vy = -this.p.speed; // muevo la nave hacia arriba
 
-                    // 3- Si no estaba ya estaba pulsando arriba
-                    if(!this.p.pressedUp){
-                        this.p.pressedUp = true;
-                        this.play("up");
+                        // 3- Si no estaba ya estaba pulsando arriba
+                        if(!this.p.pressedUp){
+                            this.p.pressedUp = true;
+                            this.play("up");
+                        }
                     }
                 }
             }
@@ -148,34 +201,37 @@ window.addEventListener("load", function() {
 
 
             /**************** ABAJO ***********************/
-            if (Q.inputs['down'] && ((this.p.y + this.p.h / 2) < Q.height) && !this.p.blocked) {
+            if (Q.inputs['down'] && (this.p.y + this.p.h/2) < Q.height) {
 
-                if(this.p.pressedUp){ //Si estaba pulsando arriba y le he dado hacia abajo
-                    this.p.vy = 0;
-                    this.p.blocked = true;
-                    this.p.pressedUp = false;
-                    this.play("up_back");
-                }
-                else{
-                    this.p.vy = this.p.speed;
+                console.log("ABAJO");
 
-                    if(!this.p.pressedDown){
-                        this.p.pressedDown = true;
-                        this.play("down");
+                if(!this.p.blocked_UD){
+                    if(this.p.pressedUp){ //Si estaba pulsando arriba y le he dado hacia abajo
+                        this.p.vy = 0;
+                        this.p.blocked_UD = true;
+                        this.p.pressedUp = false;
+                        this.play("up_back");
+                    }
+                    else{
+                        this.p.vy = this.p.speed;
+
+                        if(!this.p.pressedDown){
+                            this.p.pressedDown = true;
+                            this.play("down");
+                        }
                     }
                 }
             }
 
-
-            /***************** CASO BLOQUEO *******************/
-            if(this.p.blocked && ((Q.inputs['down'] && !Q.inputs['up']) || (!Q.inputs['down'] && Q.inputs['up']) ))
-                this.p.blocked = false;
+            /**************** BOLQUEO UP-DOWN *****************/
+            if(this.p.blocked_UD && ((Q.inputs['down'] && !Q.inputs['up']) || (!Q.inputs['down'] && Q.inputs['up']) ))
+                this.p.blocked_UD = false;
 
 
 
             if(!Q.inputs['up'] && !Q.inputs['down']) { 
                 this.p.vy = 0;
-                this.p.blocked = false;
+                this.p.blocked_UD = false;
 
                 if(this.p.pressedUp)
                     this.play("up_back");
@@ -186,12 +242,17 @@ window.addEventListener("load", function() {
                     this.play("down_back");
 
                 this.p.pressedDown = false;
-
-                //this.play("stand");
             }
  
             this.p.x  += this.p.vx * dt;
             this.p.y  += this.p.vy * dt;
+
+
+            if (this.p.y > (Q.height - this.p.h/2))
+                this.p.y = Q.height - this.p.h/2;
+            else if(this.p.y <  this.p.h/2)
+                this.p.y = this.p.h/2;
+
 
         },
         shoot: function() {
