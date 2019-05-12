@@ -64,7 +64,7 @@ window.addEventListener("load", function() {
         
         
 
-        stage.insert(new Q.Enemie3({
+       /* stage.insert(new Q.Enemie3({
             x: 300,
             y : 0
 
@@ -83,7 +83,7 @@ window.addEventListener("load", function() {
             y : Q.height-20
 
         }));
-
+*/
        
     });
 
@@ -363,13 +363,13 @@ window.addEventListener("load", function() {
 
        turn:{
             frames: [0,1,2,3,4,5,6],
-            rate: 1 / 5,
+            rate: 1 / 6,
             loop: false
        },
 
        go:{
             frames: [0,1,2,3,4,5,6,7,8],
-            rate: 1 / 8,
+            rate: 1 / 25,
             loop: true
        }
     });
@@ -384,6 +384,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vx:-200,
+                back: false,
                 sprite:"anim_enemies",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -403,18 +404,20 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-           
 
-            if((this.p.x + this.p.w/2) >  Q.width/2){
-                //this.play("begin");
-            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+           if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_green_turn";
                  this.play("turn");
-                 this.p.vx = 200;
                  this.p.y = this.p.y - 5;
-                 //this.p.sheet = "medium_green_go";
-                 //this.play("go");
+                 this.back = true;
+                 this.p.vx = 200;
+                 
                     
+            }
+
+            if(this.p.x > 550 && this.back){
+                 this.p.sheet = "medium_green_go";
+                 this.play("go");
             }
            this.p.y  += this.p.vy * dt;
 
@@ -535,7 +538,7 @@ window.addEventListener("load", function() {
         step:function(dt){
 
           if(this.p.y < 350 ){
-            if(!subiendo){
+            if(!this.subiendo){
                 this.play("down");
                 this.bajando = true;
             }else{
@@ -548,7 +551,7 @@ window.addEventListener("load", function() {
                 this.play("up");
           }*/
           else if (this.p.y < Q.height/2){
-                if(!bajando){// en el caso que no estaba bajando 
+                if(!this.bajando){// en el caso que no estaba bajando 
                     this.play("up");
                     this.subiendo = true;
                 }else{
