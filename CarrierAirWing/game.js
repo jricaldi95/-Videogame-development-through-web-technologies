@@ -13,9 +13,9 @@ window.addEventListener("load", function() {
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
     Q.loadTMX("level.tmx", function() {
-        Q.load("planes.png, planes.json, enemies.png, enemies.json, mainTitle.png", function() {
+        Q.load("planes.png, planes.json, enemies_prueba.png, enemies_prueba.json, mainTitle.png", function() {
             Q.compileSheets("planes.png", "planes.json");
-            Q.compileSheets("enemies.png", "enemies.json");
+            Q.compileSheets("enemies_prueba.png", "enemies_prueba.json");
             Q.stageScene("mainTitle");
         });
 
@@ -81,34 +81,56 @@ window.addEventListener("load", function() {
         }));
     });
 
-     Q.gravityY = 0;
-     Q.gravityX = 0;
+    Q.scene("background", function(stage) {
+        stage.insert(new Q.Background(this));
+    });
 
-     Q.SPRITE_BULLET = 0;
-     Q.SPRITE_PLAYER = 1;
-     Q.SPRITE_ENEMY = 2;
+    Q.gravityY = 0;
+    Q.gravityX = 0;
+
+    Q.SPRITE_BULLET = 0;
+    Q.SPRITE_PLAYER = 1;
+    Q.SPRITE_ENEMY = 2;
+
+
+    /********** Background **********/
+    Q.Sprite.extend("Background", {
+        init: function(p) {
+
+            this._super(p, {
+                asset: "level1.png",
+                x: 110,
+                y: -750,
+                vx: 50
+            });
+        },
+        step: function(dt) {
+            if(this.p.x < 1000)
+                this.p.x += this.p.vx * dt;
+        }
+    });
 
      /********** Player **********/
 
     Q.animations("anim_player", { 
         up: {
             frames: [5,4,3,2,1,0],
-            rate: 1 / 8,
+            rate: 1 / 9,
             loop: false
         },
         up_back: {
             frames: [0,1,2,3,4,5,6],
-            rate: 1 / 10,
+            rate: 1 / 11,
             loop: false
         },
         down: {
             frames: [7,8,9,10],
-            rate: 1 / 8,
+            rate: 1 / 9,
             loop: false
         },
         down_back: {
             frames: [10,9,8,7,6],
-            rate: 1 / 10,
+            rate: 1 / 11,
             loop: false
         }
 
@@ -124,7 +146,7 @@ window.addEventListener("load", function() {
                 y: 200,
                /* type:SPRITE_PLAYER,
                 collisionMask:SPRITE_ENEMY,*/
-                speed:200,
+                speed: 275,
                 pressedRight: false,
                 pressedLeft: false,
                 pressedUp: false,
@@ -328,21 +350,21 @@ window.addEventListener("load", function() {
 
     Q.animations("anim_enemies", { 
        begin:{
-            frames: [0,1,2],
+            frames: [0],
             rate: 1 / 2,
             loop: false
        },
 
        turn:{
-            frames: [0,1,2],
+            frames: [0,1,2,3,4,5,6],
             rate: 1 / 5,
             loop: false
        },
 
        go:{
-            frames: [0,1,2,3,4,5,6,7,8,9],
-            rate: 1 / 5,
-            loop: false
+            frames: [0,1,2,3,4,5,6,7,8],
+            rate: 1 / 8,
+            loop: true
        }
     });
 
@@ -352,10 +374,10 @@ window.addEventListener("load", function() {
         init:function(p){
             this._super(p,{
                 sheet:"medium_green_begin",
-                frame: 1,
+                frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                vx:-50,
+                vx:-200,
                 sprite:"anim_enemies",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -378,14 +400,14 @@ window.addEventListener("load", function() {
            
 
             if((this.p.x + this.p.w/2) >  Q.width/2){
-                this.play("begin");
+                //this.play("begin");
             }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_green_turn";
                  this.play("turn");
-                 this.p.vx = 50;
+                 this.p.vx = 200;
                  this.p.y = this.p.y - 5;
-                 this.p.sheet = "medium_green_go";
-                 this.play("go");
+                 //this.p.sheet = "medium_green_go";
+                 //this.play("go");
                     
             }
            this.p.y  += this.p.vy * dt;
