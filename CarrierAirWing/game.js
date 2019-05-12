@@ -56,10 +56,37 @@ window.addEventListener("load", function() {
         Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
+        stage.insert(new Q.Enemie1({
+            x: Q.width,
+            y : 200
+
+        }));
+        
+        stage.insert(new Q.Enemie3({
+            x: 300,
+            y : 0
+
+        }));
+
+        stage.insert(new Q.Enemie3({
+            x: 300,
+            y :Q.height-20
+
+        }));
+
+        stage.insert(new Q.Enemie5({
+            x: 300,
+            y : 100
+
+        }));
     });
 
      Q.gravityY = 0;
      Q.gravityX = 0;
+
+     Q.SPRITE_BULLET = 0;
+     Q.SPRITE_PLAYER = 1;
+     Q.SPRITE_ENEMY = 2;
 
      /********** Player **********/
 
@@ -265,7 +292,7 @@ window.addEventListener("load", function() {
 
     });
 
-    /********** Bullet **********/
+      /********** Bullet **********/
 
     Q.animations("anim_bullet", { 
         fire: {
@@ -280,9 +307,9 @@ window.addEventListener("load", function() {
                     this._super(p, {
                         sheet: "bullet",
                         frame: 0,
-                        sprite: "anim_bullet"
-                        //type: SPRITE_BULLET,
-                        //collisionMask: SPRITE_ENEMY,
+                        sprite: "anim_bullet",
+                        type: Q.SPRITE_BULLET,
+                        collisionMask: Q.SPRITE_ENEMY,
                         //sensor: true
                     });
 
@@ -293,7 +320,278 @@ window.addEventListener("load", function() {
                         this.destroy();
                     }
                 }
-            })
+     });
 
 
+
+     /********** Enemies **********/
+
+    Q.animations("anim_enemies", { 
+       begin:{
+            frames: [0,1,2],
+            rate: 1 / 2,
+            loop: false
+       },
+
+       turn:{
+            frames: [0,1,2],
+            rate: 1 / 5,
+            loop: false
+       },
+
+       go:{
+            frames: [0,1,2,3,4,5,6,7,8,9],
+            rate: 1 / 5,
+            loop: false
+       }
+    });
+
+    
+    Q.Sprite.extend("Enemie1",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"medium_green_begin",
+                frame: 1,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
+                vx:-50,
+                sprite:"anim_enemies",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+           
+
+            if((this.p.x + this.p.w/2) >  Q.width/2){
+                this.play("begin");
+            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+                 this.p.sheet = "medium_green_turn";
+                 this.play("turn");
+                 this.p.vx = 50;
+                 this.p.y = this.p.y - 5;
+                 this.p.sheet = "medium_green_go";
+                 this.play("go");
+                    
+            }
+           this.p.y  += this.p.vy * dt;
+        }
+
+    });
+
+
+    Q.Sprite.extend("Enemie2",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"medium_orange_begin",
+                frame: 3,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
+                speed:-200,
+                sprite:"anim_enemies",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+           
+
+            if((this.p.x + this.p.w/2) >  Q.width/2){
+                this.play("begin");
+            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+                 this.p.sheet = "medium_orange_turn";
+                 this.play("turn");
+                 this.p.vx = 50;
+                 this.p.y = this.p.y - 10;
+                 this.p.sheet = "medium_orange_go";
+                 this.play("go");
+                    
+            }
+          
+        }
+
+    });
+
+
+    Q.animations("anim_enemies_small", { 
+      
+       up:{
+            frames: [0,1,2,3,4,5,6,7,8],
+            rate: 1 / 10,
+            loop: false
+       },
+
+        down:{
+            frames: [8,7,6,5,4,3,2,1,0],
+            rate: 1 / 10,
+            loop: false
+       },
+
+       stand:{
+            frames: [8],
+            rate: 1 / 5,
+            loop: false
+       },
+    });
+
+    Q.Sprite.extend("Enemie3",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"small_green",
+                frame: 9,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
+                speed:-10,
+                vy: 50,
+                vx:10,
+                sprite:"anim_enemies_small",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+          if(this.p.y < Q.height/2 ){
+                this.play("down");
+          }else if (this.p.y > Q.height/2 ){
+                this.p.vy = -50;
+                this.play("up");
+          }
+          else {
+                this.p.vy = 0;
+                this.p.vx = 0;
+                this.play("stand");
+          }
+        }
+
+    });
+
+    Q.Sprite.extend("Enemie4",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"small_orange",
+                frame: 9,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
+                speed:-10,
+                vy: 50,
+                vx:10,
+                sprite:"anim_enemies_small",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+          if(this.p.y < Q.height/2){
+                this.play("down");
+          }else{
+                this.p.vy = 0;
+                this.p.vx = 0;
+                this.play("stand");
+          }
+        }
+
+    });
+
+    Q.Sprite.extend("Enemie5",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"big_green",
+                frame: 1,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
+                speed:40,
+                vy:-50,
+                vx:-20,
+                sprite:"anim_enemies_small",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+          if (this.p.y > 300){
+                this.p.vy = -50;
+
+
+          }
+         /* else if (this.p.y == 300) {
+                this.p.vy = 0;
+                this.p.vx = 0;
+          }*/
+          this.play("stand");
+          console.log(this.p.y);
+
+
+        }
+
+    });
 });
