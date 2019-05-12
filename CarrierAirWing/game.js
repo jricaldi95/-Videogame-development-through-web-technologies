@@ -62,23 +62,29 @@ window.addEventListener("load", function() {
 
         }));
         
+        
+
         stage.insert(new Q.Enemie3({
             x: 300,
             y : 0
 
         }));
 
-        stage.insert(new Q.Enemie3({
-            x: 300,
-            y :Q.height-20
+         stage.insert(new Q.Enemie3({
+            x: 200,
+            y :  Q.height-20,
+            vy : -50
 
         }));
 
-        stage.insert(new Q.Enemie5({
-            x: 300,
-            y : 100
+
+         stage.insert(new Q.Enemie5({
+            x: Q.width-100,
+            y : Q.height-20
 
         }));
+
+       
     });
 
      Q.gravityY = 0;
@@ -389,6 +395,10 @@ window.addEventListener("load", function() {
                     
             }
            this.p.y  += this.p.vy * dt;
+
+           if (this.p.x > Q.width ) {
+                this.destroy();
+            }
         }
 
     });
@@ -435,6 +445,10 @@ window.addEventListener("load", function() {
                  this.play("go");
                     
             }
+
+              if (this.p.x > Q.width ) {
+                this.destroy();
+            }
           
         }
 
@@ -460,6 +474,10 @@ window.addEventListener("load", function() {
             rate: 1 / 5,
             loop: false
        },
+
+       stand_big:{
+             frames: [0],
+        }
     });
 
     Q.Sprite.extend("Enemie3",{
@@ -473,6 +491,8 @@ window.addEventListener("load", function() {
                 speed:-10,
                 vy: 50,
                 vx:10,
+                bajando: false,
+                subiendo: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -492,17 +512,33 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-          if(this.p.y < Q.height/2 ){
+          if(this.p.y < 350 ){
+            if(!subiendo){
                 this.play("down");
-          }else if (this.p.y > Q.height/2 ){
+                this.bajando = true;
+            }else{
+                 this.p.vy = 0;
+                 this.p.vx = 0;
+                 this.play("stand");
+            }
+          }/*else if (this.p.y > Q.height/2 ){
                 this.p.vy = -50;
                 this.play("up");
-          }
-          else {
-                this.p.vy = 0;
-                this.p.vx = 0;
-                this.play("stand");
-          }
+          }*/
+          else if (this.p.y < Q.height/2){
+                if(!bajando){// en el caso que no estaba bajando 
+                    this.play("up");
+                    this.subiendo = true;
+                }else{
+                    this.p.vy = 0;
+                    this.p.vx = 0;
+                    this.play("stand");
+                }
+          } 
+
+           if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
         }
 
     });
@@ -544,6 +580,10 @@ window.addEventListener("load", function() {
                 this.p.vx = 0;
                 this.play("stand");
           }
+
+          if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
         }
 
     });
@@ -556,9 +596,56 @@ window.addEventListener("load", function() {
                 frame: 1,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:40,
-                vy:-50,
-                vx:-20,
+                sprite:"anim_enemies_small",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+            this.p.tiempo += dt; 
+
+          if (this.p.y > 300){
+                this.p.vy = -50;
+                this.p.vx = -20;
+
+          }
+          else if (this.p.y < 300) {
+                this.p.vy = 0;
+                this.p.vx = 0;
+                 if (this.p.tiempo > 0.70) {
+                    this.stage.insert(new Q.Bullet({ x: this.p.x, y: this.p.y - this.p.w / 2, vy: -100, direccion: " " }));
+                    this.p.tiempo = 0;
+                }
+          }
+          this.play("stand_big");
+        if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
+        }
+
+    });
+
+     Q.Sprite.extend("Boss",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"big_green",
+                frame: 1,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -580,17 +667,15 @@ window.addEventListener("load", function() {
 
           if (this.p.y > 300){
                 this.p.vy = -50;
-
+                this.p.vx = -20;
 
           }
-         /* else if (this.p.y == 300) {
+          else if (this.p.y < 300) {
                 this.p.vy = 0;
                 this.p.vx = 0;
-          }*/
-          this.play("stand");
-          console.log(this.p.y);
-
-
+          }
+          this.play("stand_big");
+        
         }
 
     });

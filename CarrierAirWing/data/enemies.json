@@ -1,7 +1,7 @@
 {
-	"medium_green_begin":{"sx":20,"sy":44,"tileW":78,"tileH":65,"frames":3},
-	"medium_green_turn":{"sx":265,"sy":46,"tileW":50,"tileH":63,"frames":3},
-	"medium_green_go":{"sx":393,"sy":44,"tileW":72,"tileH":63,"frames":10},
+	"medium_green_begin":{"sx":20,"sy":44,"tileW":78,"tileH":65,"frames":1},
+	"medium_green_turn":{"sx":265,"sy":46,"tileW":50,"tileH":63,"frames":7},
+	"medium_green_go":{"sx":393,"sy":44,"tileW":72,"tileH":63,"frames":8},
 	"medium_orange_begin":{"sx":40,"sy":87,"tileW":47,"tileH":37,"frames":3},
 	"medium_orange_turn":{"sx":192,"sy":87,"tileW":30,"tileH":37,"frames":3},
 	"medium_orange_go":{"sx":274,"sy":87,"tileW":48,"tileH":41,"frames":3},
