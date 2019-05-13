@@ -64,26 +64,26 @@ window.addEventListener("load", function() {
         
         
 
-       stage.insert(new Q.Enemie3({
+      /* stage.insert(new Q.Enemie3({
             x: 300,
             y : 0
 
         }));
 
-        stage.insert(new Q.Enemie3({
+        stage.insert(new Q.Enemie4({
             x: 200,
             y : Q.height-20,
-            vy : -50
+            abajo: true
 
-        }));
+        }));*/
 
 
-         /*  stage.insert(new Q.Enemie5({
+           stage.insert(new Q.Enemie5({
             x: Q.width-100,
             y : Q.height-20
 
         }));
-    */
+    
        
     });
 
@@ -97,6 +97,7 @@ window.addEventListener("load", function() {
     Q.SPRITE_BULLET = 0;
     Q.SPRITE_PLAYER = 1;
     Q.SPRITE_ENEMY = 2;
+    Q.SPRITE_BULLET_ENEMY = 3;
 
 
     /********** Background **********/
@@ -338,7 +339,7 @@ window.addEventListener("load", function() {
                         sprite: "anim_bullet",
                         type: Q.SPRITE_BULLET,
                         collisionMask: Q.SPRITE_ENEMY,
-                        //sensor: true
+                        sensor: true
                     });
 
                     this.add("2d");
@@ -349,6 +350,36 @@ window.addEventListener("load", function() {
                     }
                 }
      });
+
+    Q.animations("anim_bullet_enemy", { 
+        fire: {
+            frames: [3,2,1,0],
+            rate: 1 / 3,
+            loop: false
+        }
+    });
+     Q.Sprite.extend("Bullet_Enemy", {
+        init: function(p) {
+            this._super(p, {
+                sheet: "bullet_enemy",
+                sprite: "anim_bullet_enemy",
+                gravity: 0,
+                type: Q.SPRITE_BULLET_ENEMY,
+                collisionMask: Q.SPRITE_PLAYER,
+                sensor: true
+            });
+              this.add("2d");
+        },
+
+        step: function(dt) {
+            this.p.vx -= 3;
+            this.p.x += this.p.vx * dt;
+
+            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
+        }
+    });
 
 
 
@@ -481,15 +512,15 @@ window.addEventListener("load", function() {
 
     Q.animations("anim_enemies_small", { 
       
-       up:{
+       down:{
             frames: [0,1,2,3,4,5,6,7,8],
-            rate: 1 / 10,
+            rate: 1 / 6,
             loop: false
        },
 
-        down:{
+        up:{
             frames: [8,7,6,5,4,3,2,1,0],
-            rate: 1 / 10,
+            rate: 1 / 6,
             loop: false
        },
 
@@ -512,16 +543,13 @@ window.addEventListener("load", function() {
                 frame: 9,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:-10,
-                vy: 50,
-                vx:10,
-                bajando: false,
+                vy: 220,
                 subiendo: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
-            this.add("2d,animation");
+            this.add("2d,animation,tween");
            
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
@@ -536,31 +564,22 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-          if(this.p.y < 350 ){
-            if(!this.subiendo){
-                this.play("down");
-                this.bajando = true;
-            }else{
-                 this.p.vy = 0;
-                 this.p.vx = 0;
-                 this.play("stand");
-            }
-          }/*else if (this.p.y > Q.height/2 ){
-                this.p.vy = -50;
-                this.play("up");
-          }*/
-          else if (this.p.y < Q.height/2){
-                if(!this.bajando){// en el caso que no estaba bajando 
-                    this.play("up");
-                    this.subiendo = true;
-                }else{
-                    this.p.vy = 0;
-                    this.p.vx = 0;
-                    this.play("stand");
-                }
-          } 
 
-           if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+              if(this.p.y < 350 && !this.subiendo){
+                
+                    this.play("down");
+              }
+              else if (this.p.y > 350 ){
+                   
+                   this.play("up");
+                   this.p.vy = -220;
+                   this.p.x += -5;
+                   this.subiendo = true;
+               
+              }
+           
+
+            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
             }
         }
@@ -575,9 +594,8 @@ window.addEventListener("load", function() {
                 frame: 9,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:-10,
-                vy: 50,
-                vx:10,
+                vy: -200,
+                bajando: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -597,13 +615,17 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-          if(this.p.y < Q.height/2){
-                this.play("down");
-          }else{
-                this.p.vy = 0;
-                this.p.vx = 0;
-                this.play("stand");
-          }
+         if(this.p.y > 150 && !this.bajando){
+                
+                    this.play("up");
+              }
+              else if (this.p.y < 150 ){
+                   
+                   this.play("down");
+                   this.p.vy = 200;
+                   this.bajando = true;
+               
+              }
 
           if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
@@ -649,10 +671,8 @@ window.addEventListener("load", function() {
           else if (this.p.y < 300) {
                 this.p.vy = 0;
                 this.p.vx = 0;
-                 if (this.p.tiempo > 0.70) {
-                    this.stage.insert(new Q.Bullet({ x: this.p.x, y: this.p.y - this.p.w / 2, vy: -100, direccion: " " }));
-                    this.p.tiempo = 0;
-                }
+            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 2, vx: -100 }));
+                
           }
           this.play("stand_big");
         if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
