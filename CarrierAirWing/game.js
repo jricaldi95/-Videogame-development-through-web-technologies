@@ -56,34 +56,34 @@ window.addEventListener("load", function() {
         Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
-        stage.insert(new Q.Enemie1({
+       /* stage.insert(new Q.Enemie1({
             x: Q.width,
             y : 200
 
-        }));
+        }));*/
         
         
 
-       /* stage.insert(new Q.Enemie3({
+       stage.insert(new Q.Enemie3({
             x: 300,
             y : 0
 
         }));
 
-         stage.insert(new Q.Enemie3({
+        stage.insert(new Q.Enemie3({
             x: 200,
-            y :  Q.height-20,
+            y : Q.height-20,
             vy : -50
 
         }));
 
 
-         stage.insert(new Q.Enemie5({
+         /*  stage.insert(new Q.Enemie5({
             x: Q.width-100,
             y : Q.height-20
 
         }));
-*/
+    */
        
     });
 
@@ -455,23 +455,22 @@ window.addEventListener("load", function() {
                  }
             });
         },
-        step:function(dt){
-
-           
-
-            if((this.p.x + this.p.w/2) >  Q.width/2){
-                this.play("begin");
-            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+        step:function(dt){ 
+            if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_orange_turn";
                  this.play("turn");
-                 this.p.vx = 50;
-                 this.p.y = this.p.y - 10;
-                 this.p.sheet = "medium_orange_go";
-                 this.play("go");
-                    
+                 this.p.y = this.p.y - 5;
+                 this.back = true;
+                 this.p.vx = 200;
             }
 
-              if (this.p.x > Q.width ) {
+            if(this.p.x > 550 && this.back){
+                 this.p.sheet = "medium_orange_go";
+                 this.play("go");
+            }
+           this.p.y  += this.p.vy * dt;
+
+           if (this.p.x > Q.width ) {
                 this.destroy();
             }
           
