@@ -100,15 +100,18 @@ window.addEventListener("load", function() {
 
             this._super(p, {
                 asset: "level1.png",
-                x: 3240,
+                x: 10800,
                 y: 480,
-                vx: 250
+                vy: 55,
+                vx: 420
             });
         },
         step: function(dt) {
             console.log(this.p.x);
-            if(this.p.x > 0)
+            if(this.p.x > -10076)
                 this.p.x -= this.p.vx * dt;
+            if((this.p.x < 2750) && this.p.y > 0)
+                this.p.y -= this.p.vy * dt;
         }
     });
 
