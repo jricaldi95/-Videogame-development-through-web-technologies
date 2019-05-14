@@ -53,7 +53,7 @@ window.addEventListener("load", function() {
 
     });
 
-     /*Q.scene("level1", function(stage) {
+     Q.scene("level1", function(stage) {
         //Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
@@ -62,10 +62,16 @@ window.addEventListener("load", function() {
             y : 200
 
         }));
+
+        stage.insert(new Q.Enemy2({
+            x: Q.width,
+            y : 100
+
+        }));
         
         
 
-       stage.insert(new Q.Enemy3({
+        stage.insert(new Q.Enemy3({
             x: 300,
             y : 0
 
@@ -79,21 +85,20 @@ window.addEventListener("load", function() {
         }));
 
 
-           stage.insert(new Q.Enemy5({
+           /*stage.insert(new Q.Enemy5({
             x: Q.width-100,
             y : Q.height-20
 
-        }));
-    
+        }));*/
        
-    });*/
+    });
 
      var level1 = [
         // Start,   End, Gap,  Type,   Override
         //[0, 500, 500, 'Boss', {x: 0, y:200}]
         [6000, 13000, 1200, 'Enemy1', { x:  Q.width, y: 100 }],
         [3500, 5500, 500, 'Enemy3', {  x: 300,y : 0 }],
-        [6000, 13000, 1200, 'Enemy2', { x:  Q.width, y: 150 }],
+        [6000, 13000, 1200, 'Enemy2', { x:  Q.width, y: 250 }],
         [10000, 13000, 1200, 'Enemy1', {  x: Q.width,y : 200 }],
         [14000, 17000, 1200, 'Enemy4', {  x: 200, y : Q.height-20, abajo: true}],
         //[17800, 20000, 500, 'Enemy7', { x: 220, y: 240, dir: false }],
@@ -485,11 +490,12 @@ window.addEventListener("load", function() {
 
         init:function(p){
             this._super(p,{
-                sheet:"medium_orange_begin",
+                sheet:"medium_green_begin",
                 frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vx:-200,
+                vy:-20,
                 back: false,
                 sprite:"anim_enemies",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
@@ -512,9 +518,8 @@ window.addEventListener("load", function() {
 
 
            if ((this.p.x + this.p.w/2)  < Q.width/2) {
-                 this.p.sheet = "medium_orange_turn";
+                 this.p.sheet = "medium_green_turn";
                  this.play("turn");
-                 this.p.y = this.p.y - 5;
                  this.back = true;
                  this.p.vx = 200;
                  
@@ -522,7 +527,7 @@ window.addEventListener("load", function() {
             }
 
             if(this.p.x > 550 && this.back){
-                 this.p.sheet = "medium_orange_go";
+                 this.p.sheet = "medium_green_go";
                  this.play("go");
             }
            this.p.y  += this.p.vy * dt;
@@ -540,11 +545,14 @@ window.addEventListener("load", function() {
         init:function(p){
             this._super(p,{
                 sheet:"medium_orange_begin",
-                frame: 3,
+                frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:-200,
+                vx:-200,
+                vy:20,
+                back: false,
                 sprite:"anim_enemies",
+               // vy: 20,
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
@@ -562,12 +570,14 @@ window.addEventListener("load", function() {
             });
         },
         step:function(dt){ 
+
             if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_orange_turn";
                  this.play("turn");
-                 this.p.y = this.p.y - 5;
                  this.back = true;
                  this.p.vx = 200;
+                 
+                    
             }
 
             if(this.p.x > 550 && this.back){
@@ -619,6 +629,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vy: 220,
+                vx: 50,
                 subiendo: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
@@ -648,11 +659,11 @@ window.addEventListener("load", function() {
                    
                    this.play("up");
                    this.p.vy = -220;
-                   this.p.x += -5;
+
                    this.subiendo = true;
                
               }
-           
+           this.p.x += this.p.vx * dt;
 
             if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
@@ -670,6 +681,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vy: -200,
+                vx: 50,
                 bajando: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
@@ -701,7 +713,7 @@ window.addEventListener("load", function() {
                    this.bajando = true;
                
               }
-
+             this.p.x += this.p.vx * dt;
           if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
             }
