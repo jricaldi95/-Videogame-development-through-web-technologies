@@ -1,11 +1,12 @@
 {
 	"medium_green_begin":{"sx":19,"sy":45,"tileW":81,"tileH":60,"frames":1},
 	"medium_green_turn":{"sx":110,"sy":45,"tileW":68,"tileH":60,"frames":7},
-	"medium_green_go":{"sx":408,"sy":45,"tileW":82,"tileH":60,"frames":9},
+	"medium_green_go":{"sx":614,"sy":45,"tileW":83,"tileH":71,"frames":9},
 	"medium_orange_begin":{"sx":40,"sy":87,"tileW":47,"tileH":37,"frames":3},
 	"medium_orange_turn":{"sx":192,"sy":87,"tileW":30,"tileH":37,"frames":3},
 	"medium_orange_go":{"sx":274,"sy":87,"tileW":48,"tileH":41,"frames":3},
 	"small_green":{"sx":271,"sy":205,"tileW":68,"tileH":35,"frames":9},
-	"small_orange":{"sx":32,"sy":86,"tileW":53,"tileH":34,"frames":9},
-	"big_green":{"sx":110,"sy":346,"tileW":230,"tileH":77,"frames":1}
+	"small_orange":{"sx":271,"sy":257,"tileW":68,"tileH":35,"frames":9},
+	"big_green":{"sx":110,"sy":346,"tileW":230,"tileH":77,"frames":1},
+	"bullet_enemy":{"sx":356,"sy":371,"tileW":122,"tileH":17,"frames":4}
 }

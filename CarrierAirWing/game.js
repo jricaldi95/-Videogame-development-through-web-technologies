@@ -57,29 +57,35 @@ window.addEventListener("load", function() {
         //Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
-        stage.insert(new Q.Enemie1({
+       /* stage.insert(new Q.Enemie1({
             x: Q.width,
             y : 200
 
-        }));
+        }));*/
         
-        stage.insert(new Q.Enemie3({
+        
+
+      /* stage.insert(new Q.Enemie3({
             x: 300,
             y : 0
 
         }));
 
-        stage.insert(new Q.Enemie3({
-            x: 300,
-            y :Q.height-20
+        stage.insert(new Q.Enemie4({
+            x: 200,
+            y : Q.height-20,
+            abajo: true
+
+        }));*/
+
+
+           stage.insert(new Q.Enemie5({
+            x: Q.width-100,
+            y : Q.height-20
 
         }));
-
-        stage.insert(new Q.Enemie5({
-            x: 300,
-            y : 100
-
-        }));
+    
+       
     });
 
     Q.scene("background", function(stage) {
@@ -92,6 +98,7 @@ window.addEventListener("load", function() {
     Q.SPRITE_BULLET = 0;
     Q.SPRITE_PLAYER = 1;
     Q.SPRITE_ENEMY = 2;
+    Q.SPRITE_BULLET_ENEMY = 3;
 
 
     /********** Background **********/
@@ -337,7 +344,7 @@ window.addEventListener("load", function() {
                         sprite: "anim_bullet",
                         type: Q.SPRITE_BULLET,
                         collisionMask: Q.SPRITE_ENEMY,
-                        //sensor: true
+                        sensor: true
                     });
 
                     this.add("2d");
@@ -348,6 +355,36 @@ window.addEventListener("load", function() {
                     }
                 }
      });
+
+    Q.animations("anim_bullet_enemy", { 
+        fire: {
+            frames: [3,2,1,0],
+            rate: 1 / 3,
+            loop: false
+        }
+    });
+     Q.Sprite.extend("Bullet_Enemy", {
+        init: function(p) {
+            this._super(p, {
+                sheet: "bullet_enemy",
+                sprite: "anim_bullet_enemy",
+                gravity: 0,
+                type: Q.SPRITE_BULLET_ENEMY,
+                collisionMask: Q.SPRITE_PLAYER,
+                sensor: true
+            });
+              this.add("2d");
+        },
+
+        step: function(dt) {
+            this.p.vx -= 3;
+            this.p.x += this.p.vx * dt;
+
+            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
+        }
+    });
 
 
 
@@ -362,13 +399,13 @@ window.addEventListener("load", function() {
 
        turn:{
             frames: [0,1,2,3,4,5,6],
-            rate: 1 / 5,
+            rate: 1 / 6,
             loop: false
        },
 
        go:{
             frames: [0,1,2,3,4,5,6,7,8],
-            rate: 1 / 8,
+            rate: 1 / 25,
             loop: true
        }
     });
@@ -383,6 +420,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vx:-200,
+                back: false,
                 sprite:"anim_enemies",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -402,20 +440,26 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-           
 
-            if((this.p.x + this.p.w/2) >  Q.width/2){
-                //this.play("begin");
-            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+           if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_green_turn";
                  this.play("turn");
-                 this.p.vx = 200;
                  this.p.y = this.p.y - 5;
-                 //this.p.sheet = "medium_green_go";
-                 //this.play("go");
+                 this.back = true;
+                 this.p.vx = 200;
+                 
                     
             }
+
+            if(this.p.x > 550 && this.back){
+                 this.p.sheet = "medium_green_go";
+                 this.play("go");
+            }
            this.p.y  += this.p.vy * dt;
+
+           if (this.p.x > Q.width ) {
+                this.destroy();
+            }
         }
 
     });
@@ -447,20 +491,23 @@ window.addEventListener("load", function() {
                  }
             });
         },
-        step:function(dt){
-
-           
-
-            if((this.p.x + this.p.w/2) >  Q.width/2){
-                this.play("begin");
-            }else if ((this.p.x + this.p.w/2)  < Q.width/2) {
+        step:function(dt){ 
+            if ((this.p.x + this.p.w/2)  < Q.width/2) {
                  this.p.sheet = "medium_orange_turn";
                  this.play("turn");
-                 this.p.vx = 50;
-                 this.p.y = this.p.y - 10;
+                 this.p.y = this.p.y - 5;
+                 this.back = true;
+                 this.p.vx = 200;
+            }
+
+            if(this.p.x > 550 && this.back){
                  this.p.sheet = "medium_orange_go";
                  this.play("go");
-                    
+            }
+           this.p.y  += this.p.vy * dt;
+
+           if (this.p.x > Q.width ) {
+                this.destroy();
             }
           
         }
@@ -470,15 +517,15 @@ window.addEventListener("load", function() {
 
     Q.animations("anim_enemies_small", { 
       
-       up:{
+       down:{
             frames: [0,1,2,3,4,5,6,7,8],
-            rate: 1 / 10,
+            rate: 1 / 6,
             loop: false
        },
 
-        down:{
+        up:{
             frames: [8,7,6,5,4,3,2,1,0],
-            rate: 1 / 10,
+            rate: 1 / 6,
             loop: false
        },
 
@@ -487,6 +534,10 @@ window.addEventListener("load", function() {
             rate: 1 / 5,
             loop: false
        },
+
+       stand_big:{
+             frames: [0],
+        }
     });
 
     Q.Sprite.extend("Enemie3",{
@@ -497,14 +548,13 @@ window.addEventListener("load", function() {
                 frame: 9,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:-10,
-                vy: 50,
-                vx:10,
+                vy: 220,
+                subiendo: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
-            this.add("2d,animation");
+            this.add("2d,animation,tween");
            
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
@@ -519,17 +569,24 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-          if(this.p.y < Q.height/2 ){
-                this.play("down");
-          }else if (this.p.y > Q.height/2 ){
-                this.p.vy = -50;
-                this.play("up");
-          }
-          else {
-                this.p.vy = 0;
-                this.p.vx = 0;
-                this.play("stand");
-          }
+
+              if(this.p.y < 350 && !this.subiendo){
+                
+                    this.play("down");
+              }
+              else if (this.p.y > 350 ){
+                   
+                   this.play("up");
+                   this.p.vy = -220;
+                   this.p.x += -5;
+                   this.subiendo = true;
+               
+              }
+           
+
+            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
         }
 
     });
@@ -542,9 +599,8 @@ window.addEventListener("load", function() {
                 frame: 9,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:-10,
-                vy: 50,
-                vx:10,
+                vy: -200,
+                bajando: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -564,13 +620,21 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-          if(this.p.y < Q.height/2){
-                this.play("down");
-          }else{
-                this.p.vy = 0;
-                this.p.vx = 0;
-                this.play("stand");
-          }
+         if(this.p.y > 150 && !this.bajando){
+                
+                    this.play("up");
+              }
+              else if (this.p.y < 150 ){
+                   
+                   this.play("down");
+                   this.p.vy = 200;
+                   this.bajando = true;
+               
+              }
+
+          if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
         }
 
     });
@@ -583,9 +647,56 @@ window.addEventListener("load", function() {
                 frame: 1,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                speed:40,
-                vy:-50,
-                vx:-20,
+                sprite:"anim_enemies_small",
+                skipCollide: true //evita parar cuando colisiona uno con otro 
+            });
+
+            this.add("2d,animation");
+           
+            this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                 }
+                 else if (collision.obj.isA("Bullet")){
+                    //animacion de muerte
+                     this.destroy();
+                 }
+            });
+        },
+        step:function(dt){
+
+            this.p.tiempo += dt; 
+
+          if (this.p.y > 300){
+                this.p.vy = -50;
+                this.p.vx = -20;
+
+          }
+          else if (this.p.y < 300) {
+                this.p.vy = 0;
+                this.p.vx = 0;
+
+            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 2, vx: -100 }));
+                
+          }
+          this.play("stand_big");
+        if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+                this.destroy();
+            }
+        }
+
+
+    });
+
+     Q.Sprite.extend("Boss",{
+
+        init:function(p){
+            this._super(p,{
+                sheet:"big_green",
+                frame: 1,
+                type:Q.SPRITE_ENEMY,
+                collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -607,17 +718,15 @@ window.addEventListener("load", function() {
 
           if (this.p.y > 300){
                 this.p.vy = -50;
-
+                this.p.vx = -20;
 
           }
-         /* else if (this.p.y == 300) {
+          else if (this.p.y < 300) {
                 this.p.vy = 0;
                 this.p.vx = 0;
-          }*/
-          this.play("stand");
-          //console.log(this.p.y);
-
-
+          }
+          this.play("stand_big");
+        
         }
 
     });
