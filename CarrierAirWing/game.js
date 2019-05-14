@@ -13,9 +13,9 @@ window.addEventListener("load", function() {
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
     //Q.loadTMX("level.tmx", function() {
-        Q.load("level1.png, planes.png, planes.json, enemies_prueba.png, enemies_prueba.json, mainTitle.png", function() {
+        Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, mainTitle.png", function() {
             Q.compileSheets("planes.png", "planes.json");
-            Q.compileSheets("enemies_prueba.png", "enemies_prueba.json");
+            Q.compileSheets("enemies.png", "enemies.json");
             Q.stageScene("mainTitle");
         });
 
@@ -26,7 +26,7 @@ window.addEventListener("load", function() {
         Q.clearStages();
         //Q.audio.stop();
         Q.stageScene("background", 0);
-        Q.stageScene("level1", 1);
+        Q.stageScene("level", 1);
     };
 
     Q.scene("mainTitle", function(stage) {
@@ -53,39 +53,109 @@ window.addEventListener("load", function() {
 
     });
 
-     Q.scene("level1", function(stage) {
+     /*Q.scene("level1", function(stage) {
         //Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
-       /* stage.insert(new Q.Enemie1({
+        stage.insert(new Q.Enemy1({
             x: Q.width,
             y : 200
 
-        }));*/
+        }));
         
         
 
-      /* stage.insert(new Q.Enemie3({
+       stage.insert(new Q.Enemy3({
             x: 300,
             y : 0
 
         }));
 
-        stage.insert(new Q.Enemie4({
+        stage.insert(new Q.Enemy4({
             x: 200,
             y : Q.height-20,
             abajo: true
 
-        }));*/
+        }));
 
 
-           stage.insert(new Q.Enemie5({
+           stage.insert(new Q.Enemy5({
             x: Q.width-100,
             y : Q.height-20
 
         }));
     
        
+    });*/
+
+     var level1 = [
+        // Start,   End, Gap,  Type,   Override
+        //[0, 500, 500, 'Boss', {x: 0, y:200}]
+        [6000, 13000, 1200, 'Enemy1', { x:  Q.width, y: 100 }],
+        [3500, 5500, 500, 'Enemy3', {  x: 300,y : 0 }],
+        [6000, 13000, 1200, 'Enemy2', { x:  Q.width, y: 150 }],
+        [10000, 13000, 1200, 'Enemy1', {  x: Q.width,y : 200 }],
+        [14000, 17000, 1200, 'Enemy4', {  x: 200, y : Q.height-20, abajo: true}],
+        //[17800, 20000, 500, 'Enemy7', { x: 220, y: 240, dir: false }],
+        [18200, 20000, 500, 'Enemy3', { x: 350, y: 0 }],
+        [22000, 25000, 400, 'Enemy3', { x: 250, y: 0 }],
+        //[29000, 29500, 500, 'Boss', { x: 0, y: 200 }]
+    ];
+
+    Q.scene("level", function(stage) {
+        this.levelData = [];
+        for (var i = 0; i < level1.length; i++) {
+            this.levelData.push(Object.create(level1[i]));
+        }
+        this.t = 0;
+        //this.callback = callback;
+        stage.on("step", this, function(dt) {
+            var idx = 0,
+                remove = [],
+                currentWave = null;
+
+            // Update the current time offset
+            this.t += dt * 1000;
+
+            //   Start, End,  Gap, Type,   Override
+            // [ 0,     4000, 500, 'Enemy3', { x: 0, y: 0 } ]
+            while ((currentWave = this.levelData[idx]) &&
+                (currentWave[0] < this.t + 2000)) {
+                // Check if we've passed the end time
+                if (this.t > currentWave[1]) {
+                    remove.push(currentWave);
+                } else if (currentWave[0] < this.t) {
+                    // Add an enemy from the current wave
+                    /*if(currentWave[3] === "Boss"){
+                        Q.audio.stop();
+                        Q.audio.play("music_boss.mp3");
+                    }*/
+                    stage.loadAssets([
+                        [currentWave[3], currentWave[4]]
+                    ]);
+                    // Increment the start time by the gap
+                    currentWave[0] += currentWave[2];
+                }
+                idx++;
+            }
+
+            // Remove any objects from the levelData that have passed
+            for (var i = 0, len = remove.length; i < len; i++) {
+                var remIdx = this.levelData.indexOf(remove[i]);
+                if (remIdx != -1) this.levelData.splice(remIdx, 1);
+            }
+
+            // If there are no more enemies on the board or in
+            // levelData, this level is done
+            /*if(this.levelData.length === 0 && this.board.cnt[OBJECT_ENEMY] === 0) {
+                if(this.callback) this.callback();
+            }*/
+
+
+        });
+
+        
+        stage.insert(new Q.Player(this));
     });
 
     Q.scene("background", function(stage) {
@@ -411,11 +481,11 @@ window.addEventListener("load", function() {
     });
 
     
-    Q.Sprite.extend("Enemie1",{
+    Q.Sprite.extend("Enemy1",{
 
         init:function(p){
             this._super(p,{
-                sheet:"medium_green_begin",
+                sheet:"medium_orange_begin",
                 frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
@@ -430,7 +500,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                     collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
@@ -442,7 +512,7 @@ window.addEventListener("load", function() {
 
 
            if ((this.p.x + this.p.w/2)  < Q.width/2) {
-                 this.p.sheet = "medium_green_turn";
+                 this.p.sheet = "medium_orange_turn";
                  this.play("turn");
                  this.p.y = this.p.y - 5;
                  this.back = true;
@@ -452,7 +522,7 @@ window.addEventListener("load", function() {
             }
 
             if(this.p.x > 550 && this.back){
-                 this.p.sheet = "medium_green_go";
+                 this.p.sheet = "medium_orange_go";
                  this.play("go");
             }
            this.p.y  += this.p.vy * dt;
@@ -465,7 +535,7 @@ window.addEventListener("load", function() {
     });
 
 
-    Q.Sprite.extend("Enemie2",{
+    Q.Sprite.extend("Enemy2",{
 
         init:function(p){
             this._super(p,{
@@ -483,7 +553,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                     collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
@@ -540,7 +610,7 @@ window.addEventListener("load", function() {
         }
     });
 
-    Q.Sprite.extend("Enemie3",{
+    Q.Sprite.extend("Enemy3",{
 
         init:function(p){
             this._super(p,{
@@ -559,7 +629,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                    collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
@@ -591,7 +661,7 @@ window.addEventListener("load", function() {
 
     });
 
-    Q.Sprite.extend("Enemie4",{
+    Q.Sprite.extend("Enemy4",{
 
         init:function(p){
             this._super(p,{
@@ -610,7 +680,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                     collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
@@ -639,7 +709,7 @@ window.addEventListener("load", function() {
 
     });
 
-    Q.Sprite.extend("Enemie5",{
+    Q.Sprite.extend("Enemy5",{
 
         init:function(p){
             this._super(p,{
@@ -656,7 +726,7 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                     collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
