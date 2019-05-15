@@ -1,0 +1,4 @@
+{
+	"explosion":{"sx":26,"sy":23,"tileW":89,"tileH":87,"frames":7},
+	"explosion_enemy":{"sx":7,"sy":140,"tileW":74,"tileH":77,"frames":13}
+}

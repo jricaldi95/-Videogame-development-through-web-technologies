@@ -1,4 +1,5 @@
 {
-	"weapon":{"sx":33,"sy":107,"tileW":42,"tileH":28,"frames":4},
-	"score":{"sx":33,"sy":147,"tileW":42,"tileH":28,"frames":4}
+	"weapon":{"sx":33,"sy":111,"tileW":37,"tileH":21,"frames":4},
+	"score":{"sx":33,"sy":148,"tileW":37,"tileH":21,"frames":4},
+	"bullet_max":{"sx":275,"sy":191,"tileW":28,"tileH":35,"frames":1}
 }
