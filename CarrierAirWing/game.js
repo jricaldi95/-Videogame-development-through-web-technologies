@@ -31,6 +31,7 @@ window.addEventListener("load", function() {
         //Q.audio.stop();
         Q.stageScene("background", 0);
         Q.stageScene("level1", 1);
+        Q.stageScene("HUD", 2);
     };
 
     Q.scene("mainTitle", function(stage) {
@@ -38,6 +39,8 @@ window.addEventListener("load", function() {
             x: Q.width / 2,
             y: Q.height / 2
         }));
+
+        Q.state.set("score", 0);
 
         //Button
         var button = container.insert(new Q.UI.Button({
@@ -179,6 +182,34 @@ window.addEventListener("load", function() {
 
     Q.scene("background", function(stage) {
         stage.insert(new Q.Background(this));
+    });
+
+    Q.scene("HUD", function(stage) {
+        var container = stage.insert(new Q.UI.Container({
+            x: 5,
+            y: 5
+        }));
+        var score = container.insert(new Q.Score());
+
+    });
+
+    /* UI */
+
+    Q.UI.Text.extend("Score", {
+        init: function(p) {
+            this._super({
+                label: "Score: " + Q.state.p.score,
+                color: "white",
+                align: 'left',
+                x: 0,
+                y: 0
+            });
+
+            Q.state.on("change.score", this, "score");
+        },
+        score: function(score) {
+            this.p.label = "Score: " + score;
+        }
     });
 
     Q.gravityY = 0;
@@ -587,11 +618,12 @@ window.addEventListener("load", function() {
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
+                    Q.state.inc("score", 50);
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
-                     this.destroy();
-                      if (Q.state.get("score") === 300) {
+                    this.destroy();
+                    if (Q.state.get("score") === 300) {
                         this.stage.insert(new Q.Item_weapon({ x: this.p.x, y: this.p.y - this.p.w / 2}));
-                        }
+                    }
                  }
             });
         },
@@ -651,8 +683,9 @@ window.addEventListener("load", function() {
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
+                    Q.state.inc("score", 50);
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
-                     this.destroy();
+                    this.destroy();
                  }
             });
         },
@@ -735,9 +768,10 @@ window.addEventListener("load", function() {
                     //animacion de muerte
                     collision.obj.destroy();
                  }
-                 else if (collision.obj.isA("Bullet")){
-                   this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
-                     this.destroy();
+                else if (collision.obj.isA("Bullet")){
+                    Q.state.inc("score", 50);
+                    this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
+                    this.destroy();
                  }
             });
         },
@@ -787,9 +821,10 @@ window.addEventListener("load", function() {
                     //animacion de muerte
                      collision.obj.destroy();
                  }
-                 else if (collision.obj.isA("Bullet")){
+                else if (collision.obj.isA("Bullet")){
+                    Q.state.inc("score", 50);
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
-                     this.destroy();
+                    this.destroy();
                  }
             });
         },
@@ -841,6 +876,7 @@ window.addEventListener("load", function() {
                     
                     this.p.life = this.p.life - 250;
                     if(this.p.life <= 0){
+                        Q.state.inc("score", 100);
                         this.die();
                         this.destroy();
 
@@ -964,6 +1000,7 @@ window.addEventListener("load", function() {
                     }
 
                     if(this.p.life <= 0){
+                        Q.state.inc("score", 500);
                         this.destroy();
                     }
                  }
