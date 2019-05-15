@@ -26,7 +26,7 @@ window.addEventListener("load", function() {
         Q.clearStages();
         //Q.audio.stop();
         Q.stageScene("background", 0);
-        Q.stageScene("level", 1);
+        Q.stageScene("level1", 1);
     };
 
     Q.scene("mainTitle", function(stage) {
@@ -57,7 +57,7 @@ window.addEventListener("load", function() {
         //Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
         
-        stage.insert(new Q.Enemy1({
+        /*stage.insert(new Q.Enemy1({
             x: Q.width,
             y : 200
 
@@ -82,14 +82,14 @@ window.addEventListener("load", function() {
             y : Q.height-20,
             abajo: true
 
-        }));
+        }));*/
 
 
-           /*stage.insert(new Q.Enemy5({
+           stage.insert(new Q.Enemy5({
             x: Q.width-100,
             y : Q.height-20
 
-        }));*/
+        }));
        
     });
 
@@ -189,7 +189,7 @@ window.addEventListener("load", function() {
             });
         },
         step: function(dt) {
-            console.log(this.p.x);
+            //console.log(this.p.x);
             if(this.p.x > -10076)
                 this.p.x -= this.p.vx * dt;
             if((this.p.x < 2750) && this.p.y > 0)
@@ -255,7 +255,7 @@ window.addEventListener("load", function() {
             /**************** DERECHA *****************/
             if (Q.inputs['right'] && (this.p.x + this.p.w/2) < Q.width){
                 
-                console.log("DERECHA");
+               // console.log("DERECHA");
 
                 if(!this.p.blocked_RL){
 
@@ -281,7 +281,7 @@ window.addEventListener("load", function() {
             /**************** IZQUIERDA *****************/
             if (Q.inputs['left'] && (this.p.x - this.p.w/2) > 0){
                
-               console.log("IZQUIERDA");
+               //console.log("IZQUIERDA");
 
                if(!this.p.blocked_RL){
 
@@ -310,7 +310,7 @@ window.addEventListener("load", function() {
             /**************** ARRIBA *****************/
             if (Q.inputs['up'] && (this.p.y - this.p.h/2) > 0){
 
-                console.log("ARRIBA");
+                //console.log("ARRIBA");
 
                 if(!this.p.blocked_UD){
                     // 1- Si estaba pulsando antes la flecha hacia abajo
@@ -339,7 +339,7 @@ window.addEventListener("load", function() {
             /**************** ABAJO ***********************/
             if (Q.inputs['down'] && (this.p.y + this.p.h/2) < Q.height) {
 
-                console.log("ABAJO");
+               // console.log("ABAJO");
 
                 if(!this.p.blocked_UD){
                     if(this.p.pressedUp){ //Si estaba pulsando arriba y le he dado hacia abajo
@@ -742,6 +742,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 sprite:"anim_enemies_small",
+                time: 0,
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
@@ -760,8 +761,8 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-            this.p.tiempo += dt; 
-
+            this.p.time += dt; 
+            console.log( this.p.time);
           if (this.p.y > 300){
                 this.p.vy = -50;
                 this.p.vx = -20;
@@ -771,7 +772,12 @@ window.addEventListener("load", function() {
                 this.p.vy = 0;
                 this.p.vx = 0;
 
-            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 2, vx: -100 }));
+                 //this.p.time += dt; 
+
+                if(this.p.time > 5){
+                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 2, vx: -100 }));
+                    this.p.time = 0;
+                }
                 
           }
           this.play("stand_big");
