@@ -474,7 +474,7 @@ window.addEventListener("load", function() {
 
        turn:{
             frames: [0,1,2,3,4,5,6],
-            rate: 1 / 6,
+            rate: 1 / 14,
             loop: false
        },
 
@@ -494,7 +494,7 @@ window.addEventListener("load", function() {
                 frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                vx:-200,
+                vx:-300,
                 vy:-20,
                 back: false,
                 sprite:"anim_enemies",
@@ -517,16 +517,22 @@ window.addEventListener("load", function() {
         step:function(dt){
 
 
-           if ((this.p.x + this.p.w/2)  < Q.width/2) {
+           if ((this.p.x + this.p.w/2)  < Q.width/2 && !this.p.back) {
                  this.p.sheet = "medium_green_turn";
                  this.play("turn");
-                 this.back = true;
-                 this.p.vx = 200;
+                 this.p.back = true;
+                 //this.p.vx = 200;
+                 this.p.vx = -45;
                  
                     
             }
+            
+            if((this.p.x + this.p.w/2)  < ((Q.width/2) - 17))
+                this.p.vx = 250;
 
-            if(this.p.x > 550 && this.back){
+
+            if(this.p.x > 384 && this.p.back){
+                 this.p.vx = 300;
                  this.p.sheet = "medium_green_go";
                  this.play("go");
             }
@@ -548,7 +554,7 @@ window.addEventListener("load", function() {
                 frame: 0,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                vx:-200,
+                vx:-300,
                 vy:20,
                 back: false,
                 sprite:"anim_enemies",
@@ -571,16 +577,22 @@ window.addEventListener("load", function() {
         },
         step:function(dt){ 
 
-            if ((this.p.x + this.p.w/2)  < Q.width/2) {
+            if ((this.p.x + this.p.w/2)  < Q.width/2 && !this.p.back) {
                  this.p.sheet = "medium_orange_turn";
                  this.play("turn");
-                 this.back = true;
-                 this.p.vx = 200;
+                 this.p.back = true;
+                 //this.p.vx = 200;
+                 this.p.vx = -45;
                  
                     
             }
+            
+            if((this.p.x + this.p.w/2)  < ((Q.width/2) - 17))
+                this.p.vx = 250;
 
-            if(this.p.x > 550 && this.back){
+
+            if(this.p.x > 384 && this.p.back){
+                 this.p.vx = 300;
                  this.p.sheet = "medium_orange_go";
                  this.play("go");
             }
@@ -629,7 +641,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vy: 220,
-                vx: 50,
+                vx: 18,
                 subiendo: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
@@ -681,7 +693,7 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 vy: -200,
-                vx: 50,
+                vx: 18,
                 bajando: false,
                 sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
