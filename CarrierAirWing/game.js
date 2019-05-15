@@ -767,7 +767,8 @@ window.addEventListener("load", function() {
                 sprite:"anim_enemies_small",
                 direction: false,
                 life: 5500,
-                time: 0,
+                bullet_time: 0,
+                life_time: 0,
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
@@ -790,52 +791,60 @@ window.addEventListener("load", function() {
         },
         step:function(dt){
 
-            this.p.time += dt; 
+            this.p.bullet_time += dt;
+            this.p.life_time += dt;
             //console.log( this.p.time);
 
-            if(this.p.direction == true){ //sale desde arriba
-                if(this.p.y < 180){
-                    this.p.vy = 50;
-                    this.p.vx = -20;
-                }
-                else if( this.p.y > 180){
-                     this.p.vy = 0;
-                this.p.vx = 0;
+            if(this.p.life_time < 11){
 
-                 //this.p.time += dt; 
-
-                if(this.p.time > 5){
-                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
-                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
-                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
-                    this.p.time = 0;
-                }
-                }
-
-            }else{ // sale desde abajo
-
-                if (this.p.y > 300){
-                    this.p.vy = -50;
-                    this.p.vx = -20;
-
-                }
-                else if (this.p.y < 300) {
-                    this.p.vy = 0;
-                    this.p.vx = 0;
+                if(this.p.direction == true){ //sale desde arriba
+                    if(this.p.y < 180){
+                        this.p.vy = 50;
+                        this.p.vx = -20;
+                    }
+                    else if( this.p.y > 180){
+                        this.p.vy = 0;
+                        this.p.vx = 0;
 
                      //this.p.time += dt; 
 
-                    if(this.p.time > 5){
+                    if(this.p.bullet_time > 5){
                         this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
                         this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
                         this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
-                        this.p.time = 0;
+                        this.p.bullet_time = 0;
                     }
-                    
+                    }
+
+                }else{ // sale desde abajo
+
+                    if (this.p.y > 300){
+                        this.p.vy = -50;
+                        this.p.vx = -20;
+
+                    }
+                    else if (this.p.y < 300) {
+                        this.p.vy = 0;
+                        this.p.vx = 0;
+
+                         //this.p.time += dt; 
+
+                        if(this.p.bullet_time > 5){
+                            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
+                            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
+                            this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
+                            this.p.bullet_time = 0;
+                        }
+                        
+                    }
                 }
             }
-          this.play("stand_big");
-        if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+            else{
+                this.p.vx = 250;
+            }
+
+            this.play("stand_big");
+            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
             }
         }
