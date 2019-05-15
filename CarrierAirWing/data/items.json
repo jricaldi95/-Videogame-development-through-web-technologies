@@ -1,0 +1,4 @@
+{
+	"weapon":{"sx":33,"sy":107,"tileW":42,"tileH":28,"frames":4},
+	"score":{"sx":33,"sy":147,"tileW":42,"tileH":28,"frames":4}
+}
