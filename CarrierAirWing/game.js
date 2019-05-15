@@ -775,7 +775,9 @@ window.addEventListener("load", function() {
                  //this.p.time += dt; 
 
                 if(this.p.time > 5){
-                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 2, vx: -100 }));
+                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
+                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
+                    this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
                     this.p.time = 0;
                 }
                 
