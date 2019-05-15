@@ -26,7 +26,7 @@ window.addEventListener("load", function() {
         Q.clearStages();
         //Q.audio.stop();
         Q.stageScene("background", 0);
-        Q.stageScene("level1", 1);
+        Q.stageScene("level", 1);
     };
 
     Q.scene("mainTitle", function(stage) {
@@ -87,7 +87,14 @@ window.addEventListener("load", function() {
 
            stage.insert(new Q.Enemy5({
             x: Q.width-100,
-            y : Q.height-20
+            y : Q.height-20,
+            direction: false
+
+        }));
+           stage.insert(new Q.Enemy5({
+            x: Q.width-100,
+            y : 20,
+            direction: true
 
         }));
        
@@ -423,6 +430,9 @@ window.addEventListener("load", function() {
                     });
 
                     this.add("2d");
+                    this.on("hit", function(collision) {
+                         this.destroy();
+                    });
                 },
                 step: function(dt) {
                     if (this.p.x >  Q.width) {
@@ -449,6 +459,14 @@ window.addEventListener("load", function() {
                 sensor: true
             });
               this.add("2d");
+
+              this.on("hit", function(collision) {
+                if (collision.obj.isA("Player")) {
+                    //animacion de muerte
+                     this.destroy();
+                     collision.obj.destroy();
+                 }
+            });
         },
 
         step: function(dt) {
@@ -742,6 +760,8 @@ window.addEventListener("load", function() {
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
                 sprite:"anim_enemies_small",
+                direction: false,
+                life: 5500,
                 time: 0,
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
@@ -755,21 +775,26 @@ window.addEventListener("load", function() {
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
+                    this.p.life = this.p.life - 250;
+                    if(this.p.life <= 0){
+
                      this.destroy();
+                    }
                  }
             });
         },
         step:function(dt){
 
             this.p.time += dt; 
-            console.log( this.p.time);
-          if (this.p.y > 300){
-                this.p.vy = -50;
-                this.p.vx = -20;
+            //console.log( this.p.time);
 
-          }
-          else if (this.p.y < 300) {
-                this.p.vy = 0;
+            if(this.p.direction == true){ //sale desde arriba
+                if(this.p.y < 180){
+                    this.p.vy = 50;
+                    this.p.vx = -20;
+                }
+                else if( this.p.y > 180){
+                     this.p.vy = 0;
                 this.p.vx = 0;
 
                  //this.p.time += dt; 
@@ -780,8 +805,30 @@ window.addEventListener("load", function() {
                     this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
                     this.p.time = 0;
                 }
-                
-          }
+                }
+
+            }else{ // sale desde abajo
+
+                if (this.p.y > 300){
+                    this.p.vy = -50;
+                    this.p.vx = -20;
+
+                }
+                else if (this.p.y < 300) {
+                    this.p.vy = 0;
+                    this.p.vx = 0;
+
+                     //this.p.time += dt; 
+
+                    if(this.p.time > 5){
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
+                        this.p.time = 0;
+                    }
+                    
+                }
+            }
           this.play("stand_big");
         if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
                 this.destroy();
