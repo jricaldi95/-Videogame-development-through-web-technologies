@@ -101,7 +101,7 @@ window.addEventListener("load", function() {
         button.on("click", function() {
             Q.clearStages();
             Q.state.reset({
-                score: 0
+                score: 0,
                 lifes: 5
             });
            StartLevel1();
