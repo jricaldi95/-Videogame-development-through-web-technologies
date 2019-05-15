@@ -893,4 +893,27 @@ window.addEventListener("load", function() {
         }
 
     });
+
+     /************Item************/
+     Q.Sprite.extend("Item_weapon", {
+        init: function(p) {
+            this._super(p, {
+                sheet: "pow",
+                sprite: "pow_anim",
+                gravity: 0,
+                nPow: t,
+                tiempo: 0
+            });
+
+            this.add("animation");
+        },
+        step: function(dt) {
+            this.p.tiempo += dt;
+            if(this.p.tiempo < 8){
+                this.play("P"+ this.p.nPow);
+            }else{
+                this.destroy();
+            }
+        }
+    });
 });
