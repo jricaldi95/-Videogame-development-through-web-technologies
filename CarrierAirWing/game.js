@@ -13,9 +13,10 @@ window.addEventListener("load", function() {
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
     //Q.loadTMX("level.tmx", function() {
-        Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, mainTitle.png", function() {
+        Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png", function() {
             Q.compileSheets("planes.png", "planes.json");
             Q.compileSheets("enemies.png", "enemies.json");
+            Q.compileSheets("boss1.png", "boss1.json");
             Q.stageScene("mainTitle");
         });
 
@@ -26,7 +27,7 @@ window.addEventListener("load", function() {
         Q.clearStages();
         //Q.audio.stop();
         Q.stageScene("background", 0);
-        Q.stageScene("level", 1);
+        Q.stageScene("level1", 1);
     };
 
     Q.scene("mainTitle", function(stage) {
@@ -85,7 +86,7 @@ window.addEventListener("load", function() {
         }));*/
 
 
-           stage.insert(new Q.Enemy5({
+        /*   stage.insert(new Q.Enemy5({
             x: Q.width-100,
             y : Q.height-20,
             direction: false
@@ -95,6 +96,11 @@ window.addEventListener("load", function() {
             x: Q.width-100,
             y : 20,
             direction: true
+
+        }));*/
+                  stage.insert(new Q.Boss1({
+            x: 300,
+            y : 20,
 
         }));
        
@@ -844,7 +850,7 @@ window.addEventListener("load", function() {
             }
 
             this.play("stand_big");
-            if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+            if (this.p.x > Q.width) {
                 this.destroy();
             }
         }
@@ -852,15 +858,21 @@ window.addEventListener("load", function() {
 
     });
 
-     Q.Sprite.extend("Boss",{
+
+     Q.Sprite.extend("Boss1",{
 
         init:function(p){
             this._super(p,{
-                sheet:"big_green",
-                frame: 1,
+                sheet:"boss1",
+                frame: 0,
+                life : 10500,
+                bullet_time: 0,
+                life_time: 0,
+                move_time: 0,
+                ini : true,
+                direction: false,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                sprite:"anim_enemies_small",
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
@@ -869,26 +881,97 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
-                     this.destroy();
+                     collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
                     //animacion de muerte
-                     this.destroy();
+                    this.p.life = this.p.life - 250;
+
+                    if(this.p.life == 7000){
+                        console.log("Motores fuera!!");
+                        this.p.frame = 1;
+                    }
+                    else if (this.p.life == 3500){
+                        console.log("Alas fuera!!");
+                        this.p.frame = 2;
+                    }
+                    else if(this.p.life == 500){
+                        console.log("A punto!!");
+                        this.p.frame = 3;
+                    }
+
+                    if(this.p.life <= 0){
+                        this.destroy();
+                    }
                  }
             });
         },
         step:function(dt){
 
-          if (this.p.y > 300){
-                this.p.vy = -50;
-                this.p.vx = -20;
+            this.p.bullet_time += dt;
+            this.p.life_time += dt;
 
-          }
-          else if (this.p.y < 300) {
-                this.p.vy = 0;
-                this.p.vx = 0;
-          }
-          this.play("stand_big");
+            if(this.p.life_time < 23){
+
+                if(this.p.ini){
+                    if(this.p.y < 235){
+                        this.p.vy = 75;
+                        this.p.vx = 65;
+                    }
+                    else if( this.p.y > 235){
+                        this.p.vy = 0;
+                        this.p.vx = 0;
+                        this.p.move_time += dt;
+                        if(this.p.move_time >= 1){
+                            this.p.ini = false;
+                            this.p.move_time = 0;
+                        }
+                    }
+                }
+                else{
+
+                    if(this.p.bullet_time > 6){
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y, vx: -100 }));
+                        this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y + this.p.w / 4, vx: -100 }));
+                        this.p.bullet_time = 0;
+                    }
+
+                    //trngo que bajar
+                    if(!this.p.direction){ // hacia abajo
+                        if(this.p.y <= Q.height - 100){
+                            this.p.vy = 50;
+                        }
+                        else{ // Si he llegado abajo me paro y espero dos segundos
+                            this.p.move_time += dt;
+                            this.p.vy = 0;
+                            if(this.p.move_time >= 1){
+                                this.p.direction = true; // Ahora hay que ir hacia arriba
+                                this.p.move_time = 0;
+                            }
+                        }
+                    }
+                    else{ // Hacia arriba
+                        if(this.p.y >= 100){
+                            this.p.vy = -50;
+                        }
+                        else{ // Si he llegado a arriba me paro y espero dos segundos
+                            this.p.move_time += dt;
+                            this.p.vy = 0;
+                            if(this.p.move_time >= 1){
+                                this.p.direction = false; // Ahora hay que ir hacia abajo
+                                this.p.move_time = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+                this.p.vx = 250;
+            }
+
+            if( this.p.vx > Q.width)
+                this.destroy();
         
         }
 
