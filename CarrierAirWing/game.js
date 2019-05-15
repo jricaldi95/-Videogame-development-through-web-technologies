@@ -100,18 +100,23 @@ window.addEventListener("load", function() {
        
     });
 
-     var level1 = [
+     var level1 = [//21600
         // Start,   End, Gap,  Type,   Override
-        //[0, 500, 500, 'Boss', {x: 0, y:200}]
-        [6000, 13000, 1200, 'Enemy1', { x:  Q.width, y: 100 }],
-        [3500, 5500, 500, 'Enemy3', {  x: 300,y : 0 }],
-        [6000, 13000, 1200, 'Enemy2', { x:  Q.width, y: 250 }],
-        [10000, 13000, 1200, 'Enemy1', {  x: Q.width,y : 200 }],
-        [14000, 17000, 1200, 'Enemy4', {  x: 200, y : Q.height-20, abajo: true}],
-        //[17800, 20000, 500, 'Enemy7', { x: 220, y: 240, dir: false }],
-        [18200, 20000, 500, 'Enemy3', { x: 350, y: 0 }],
+        [1000, 2000, 300, 'Enemy1', {  x: Q.width,y :200 }],
+        [3000, 4000, 300, 'Enemy1', { x:  Q.width, y: 350 }],
+        [5000, 6500, 300,  'Enemy2', {  x: Q.width,y : 300 }],
+        [7200, 8200, 250, 'Enemy2', { x:  Q.width, y: 150 }],
+        [7200, 8200, 250, 'Enemy1', {  x: Q.width,y : 360 }],
+        //[10000, 12000, 350, 'Enemy4', { x: 350, y : Q.height-20}],
+        //[11500, 13000, 12000, 'Enemy5', {  x: Q.width-100,y: Q.height-20}],
+        /*[19000, 22000, 20000, 'Enemy5', {  x: Q.width-100,y: 20,direction: true}],
+        [22500, 22800, 22300, 'Enemy5', {  x: Q.width-100,y: Q.height-20}],*/
+        [15000, 16050, 250, 'Enemy3', {  x: 300, y : 0}],
+        [15000, 16050, 250, 'Enemy4', {  x: 350, y : Q.height-20}],
+        [17200, 18050, 250, 'Enemy3', {  x: 0, y : 0}],
+       /* [18200, 20000, 500, 'Enemy3', { x: 350, y: 0 }],
         [22000, 25000, 400, 'Enemy3', { x: 250, y: 0 }],
-        //[29000, 29500, 500, 'Boss', { x: 0, y: 200 }]
+        //[29000, 29500, 500, 'Boss', { x: 0, y: 200 }]*/
     ];
 
     Q.scene("level", function(stage) {
