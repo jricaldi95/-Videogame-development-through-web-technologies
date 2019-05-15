@@ -108,10 +108,10 @@ window.addEventListener("load", function() {
         [7200, 8200, 250, 'Enemy2', { x:  Q.width, y: 150 }],
         [7200, 8200, 250, 'Enemy1', {  x: Q.width,y : 360 }],
         //[10000, 12000, 350, 'Enemy4', { x: 350, y : Q.height-20}],
-        //[11500, 13000, 12000, 'Enemy5', {  x: Q.width-100,y: Q.height-20}],
+        [11500, 13000, 12000, 'Enemy5', {  x: Q.width-100,y: Q.height-20}],
         /*[19000, 22000, 20000, 'Enemy5', {  x: Q.width-100,y: 20,direction: true}],
         [22500, 22800, 22300, 'Enemy5', {  x: Q.width-100,y: Q.height-20}],*/
-        [15000, 16050, 250, 'Enemy3', {  x: 300, y : 0}],
+        /*[15000, 16050, 250, 'Enemy3', {  x: 300, y : 0}],
         [15000, 16050, 250, 'Enemy4', {  x: 350, y : Q.height-20}],
         [17200, 18050, 250, 'Enemy3', {  x: 0, y : 0}],
        /* [18200, 20000, 500, 'Enemy3', { x: 350, y: 0 }],
