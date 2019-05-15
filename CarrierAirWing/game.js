@@ -895,11 +895,42 @@ window.addEventListener("load", function() {
     });
 
      /************Item************/
+     Q.animations("anim_items", { 
+      
+       show:{
+            frames: [0,1,2,3,],
+            rate: 1 / 6,
+            loop: false
+       }
+    });
+
      Q.Sprite.extend("Item_weapon", {
         init: function(p) {
             this._super(p, {
-                sheet: "pow",
-                sprite: "pow_anim",
+                sheet: "weapon",
+                sprite: "anim_items",
+                gravity: 0,
+                nPow: t,
+                tiempo: 0
+            });
+
+            this.add("animation");
+        },
+        step: function(dt) {
+            this.p.tiempo += dt;
+            if(this.p.tiempo < 8){
+                this.play("P"+ this.p.nPow);
+            }else{
+                this.destroy();
+            }
+        }
+    });
+
+     Q.Sprite.extend("Item_score", {
+        init: function(p) {
+            this._super(p, {
+                sheet: "score",
+                sprite: "anim_items",
                 gravity: 0,
                 nPow: t,
                 tiempo: 0
