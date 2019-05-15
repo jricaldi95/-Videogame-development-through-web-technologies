@@ -14,13 +14,14 @@ window.addEventListener("load", function() {
 
     //Q.loadTMX("level.tmx", function() {
 
-        Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png,bullets.png,items.json,explosion.png, explosion.json", function() {
+        Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png,, victory.png, defeat.png, bullets.png,items.json,explosion.png, explosion.json", function() {
             Q.compileSheets("planes.png", "planes.json");
             Q.compileSheets("enemies.png", "enemies.json");
             Q.compileSheets("bullets.png", "items.json");
             Q.compileSheets("explosion.png", "explosion.json");
             Q.compileSheets("boss1.png", "boss1.json");
             Q.stageScene("mainTitle");
+            //Q.stageScene("winGame");
         });
 
 
@@ -41,6 +42,7 @@ window.addEventListener("load", function() {
         }));
 
         Q.state.set("score", 0);
+        Q.state.set("lifes", 5);
 
         //Button
         var button = container.insert(new Q.UI.Button({
@@ -60,36 +62,54 @@ window.addEventListener("load", function() {
 
     });
 
+    Q.scene("winGame", function(stage) {
+
+        var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
+        var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "victory.png" }));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU WIN!", size: 35, color: "white"}));
+
+        button.on("click", function() {
+            Q.clearStages();
+            Q.state.reset({
+                score: 0,
+                lifes: 2
+            });
+            StartLevel1();
+        });
+
+        Q.input.on("confirm", this, function() {
+            Q.clearStages();
+            Q.state.reset({
+                score: 0,
+                lifes: 2
+            });
+            StartLevel1();
+        });
+
+        container.fit(50);
+
+    });
+
+        Q.scene("loseGame", function(stage) {
+        var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
+        var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "defeat.png" }));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "GAME OVER", size: 35, color: "white"}));
+
+        button.on("click", function() {
+            Q.clearStages();
+            Q.state.reset({
+                score: 0
+                //lifes: 2
+            });
+           StartLevel1();
+
+        });
+        container.fit(50);
+    });
+
      Q.scene("level1", function(stage) {
         //Q.stageTMX("level.tmx", stage);
         var player = stage.insert(new Q.Player());
-        
-        /*stage.insert(new Q.Enemy1({
-            x: Q.width,
-            y : 200
-
-        }));
-
-        stage.insert(new Q.Enemy2({
-            x: Q.width,
-            y : 100
-
-        }));
-        
-        
-
-        stage.insert(new Q.Enemy3({
-            x: 300,
-            y : 0
-
-        }));
-
-        stage.insert(new Q.Enemy4({
-            x: 200,
-            y : Q.height-20,
-            abajo: true
-
-        }));*/
 
            stage.insert(new Q.Enemy5({
             x: Q.width-100,
@@ -190,6 +210,7 @@ window.addEventListener("load", function() {
             y: 5
         }));
         var score = container.insert(new Q.Score());
+        var lifes = container.insert(new Q.Lifes())
 
     });
 
@@ -209,6 +230,25 @@ window.addEventListener("load", function() {
         },
         score: function(score) {
             this.p.label = "Score: " + score;
+        }
+    });
+
+    Q.UI.Text.extend("Lifes", {
+        init: function(p) {
+            this._super({
+                label: "Lifes: " + + Q.state.p.lifes,
+                align: 'right',
+                x: Q.width - 15,
+                y: 0,
+                color: "white",
+            });
+
+
+            Q.state.on("change.lifes", this, "lifes");
+        },
+
+        lifes: function(lifes) {
+            this.p.label = "Lifes: " + lifes;
         }
     });
 
@@ -554,6 +594,19 @@ window.addEventListener("load", function() {
               this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      this.destroy();
                      collision.obj.destroy();
                  }
@@ -615,6 +668,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
@@ -680,6 +746,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
@@ -766,6 +845,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                     collision.obj.destroy();
                  }
                 else if (collision.obj.isA("Bullet")){
@@ -819,6 +911,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      collision.obj.destroy();
                  }
                 else if (collision.obj.isA("Bullet")){
@@ -870,6 +975,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
@@ -980,6 +1098,19 @@ window.addEventListener("load", function() {
             this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
                     //animacion de muerte
+                    setTimeout(function() {
+                            if (Q.state.get("lifes") > 0) {
+                                Q.clearStages();
+                                Q.stageScene("background", 0);
+                                Q.stageScene("level", 1);
+                                Q.stageScene("HUD", 2);
+                                Q.state.inc("lifes", -1);
+                            } else {
+                                Q.clearStages();
+                                //Q.audio.stop();
+                                Q.stageScene("loseGame", 0);
+                            }
+                        }, 1000);
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")){
@@ -1002,6 +1133,11 @@ window.addEventListener("load", function() {
                     if(this.p.life <= 0){
                         Q.state.inc("score", 500);
                         this.destroy();
+                        setTimeout(function() {
+                            Q.clearStages();
+                            //Q.audio.stop();
+                            Q.stageScene("winGame");
+                        }, 1500);
                     }
                  }
             });
