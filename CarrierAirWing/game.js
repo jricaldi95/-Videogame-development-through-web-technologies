@@ -36,7 +36,7 @@ window.addEventListener("load", function() {
         }));
 
         Q.state.set("score", 0);
-        Q.state.set("lifes", 5);
+        Q.state.set("lifes", 3);
 
         //Button
         var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#CCCCCC", asset: "mainTitle.png"}))
@@ -58,10 +58,10 @@ window.addEventListener("load", function() {
 
         var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
         var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "victory.png" }));
-        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU WIN!", size: 35, color: "white"}));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU WIN!", size: 40, color: "white", family: "ARCADECLASSIC"}));
 
         Q.state.set("score", 0);
-        Q.state.set("lifes", 5);
+        Q.state.set("lifes", 3);
 
         button.on("click", function() {
             StartLevel1();
@@ -79,10 +79,10 @@ window.addEventListener("load", function() {
     Q.scene("loseGame", function(stage) {
         var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
         var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "defeat.png" }));
-        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "GAME OVER", size: 35, color: "white"}));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "GAME OVER", size: 40, color: "white", family: "ARCADECLASSIC"}));
 
         Q.state.set("score", 0);
-        Q.state.set("lifes", 5);
+        Q.state.set("lifes", 3);
 
         button.on("click", function() {
            StartLevel1();
@@ -190,7 +190,9 @@ window.addEventListener("load", function() {
                 label: "Score: " + Q.state.p.score,
                 color: "white",
                 align: 'left',
-                x: 0,
+                size: 30,
+                family: "ARCADECLASSIC",
+                x: 7,
                 y: 0
             });
 
@@ -204,10 +206,12 @@ window.addEventListener("load", function() {
     Q.UI.Text.extend("Lifes", {
         init: function(p) {
             this._super({
-                label: "Lifes: " + + Q.state.p.lifes,
+                label: "Lifes: " + Q.state.p.lifes,
                 align: 'right',
                 x: Q.width - 15,
                 y: 0,
+                size: 30,
+                family: "ARCADECLASSIC",
                 color: "white",
             });
 
