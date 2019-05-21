@@ -12,7 +12,7 @@ window.addEventListener("load", function() {
 
     //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
 
-    Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png,, victory.png, defeat.png, bullets.png,items.json,explosion.png, explosion.json", function() {
+    Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png, victory.png, defeat.png, bullets.png, items.json, explosion.png, explosion.json", function() {
         Q.compileSheets("planes.png", "planes.json");
         Q.compileSheets("enemies.png", "enemies.json");
         Q.compileSheets("bullets.png", "items.json");
@@ -39,12 +39,7 @@ window.addEventListener("load", function() {
         Q.state.set("lifes", 5);
 
         //Button
-        var button = container.insert(new Q.UI.Button({
-            x: 0,
-            y: 0,
-            fill: "#CCCCCC",
-            asset: "mainTitle.png"
-        }))
+        var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#CCCCCC", asset: "mainTitle.png"}))
 
         button.on("click", function() {
             StartLevel1();
@@ -53,6 +48,8 @@ window.addEventListener("load", function() {
         Q.input.on("confirm", this, function() {
             StartLevel1();
         });
+
+        container.fit(20);
 
     });
 
