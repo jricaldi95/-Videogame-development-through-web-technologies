@@ -1083,7 +1083,7 @@ window.addEventListener("load", function() {
             this._super(p,{
                 sheet:"boss1",
                 frame: 0,
-                life : 10500,
+                life : 35000,
                 bullet_time: 0,
                 life_time: 0,
                 move_time: 0,
@@ -1119,20 +1119,17 @@ window.addEventListener("load", function() {
                     //animacion de muerte
                     this.p.life = this.p.life - 250;
 
-                    if(this.p.life == 7000){
+                    if(this.p.life == 21500){
                         console.log("Motores fuera!!");
                         this.p.frame = 1;
                     }
-                    else if (this.p.life == 3500){
+                    else if (this.p.life == 9500){
                         console.log("Alas fuera!!");
                         this.p.frame = 2;
                     }
-                    else if(this.p.life == 500){
-                        console.log("A punto!!");
-                        this.p.frame = 3;
-                    }
 
                     if(this.p.life <= 0){
+                        this.p.frame = 3;
                         Q.state.inc("score", 500);
                         this.destroy();
                         setTimeout(function() {
