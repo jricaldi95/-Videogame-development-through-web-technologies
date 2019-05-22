@@ -492,14 +492,14 @@ window.addEventListener("load", function() {
                 this.stage.insert(new Q.Bullet({
                       x: this.p.x + this.p.w/2,
                     y: this.p.y,
-                    vx: 1000
+                    vx: 1500
                 }))
             } else {
                 Q.audio.play("Shoot2.ogg");
                 this.stage.insert(new Q.Bullet_max({
                       x: this.p.x + this.p.w/2,
                     y: this.p.y,
-                    vx: 1000
+                    vx: 1500
                 }))
             }
             
@@ -599,10 +599,11 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 0) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
@@ -671,13 +672,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet") || collision.obj.isA("Bullet_max")){
@@ -745,13 +748,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
@@ -772,7 +777,6 @@ window.addEventListener("load", function() {
                  this.p.sheet = "medium_orange_turn";
                  this.play("turn");
                  this.p.back = true;
-                 //this.p.vx = 200;
                  this.p.vx = -45;
                  
                     
@@ -847,13 +851,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                     collision.obj.destroy();
                  }
                 else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
@@ -912,13 +918,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                      collision.obj.destroy();
                  }
                 else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
@@ -976,13 +984,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
@@ -1006,7 +1016,6 @@ window.addEventListener("load", function() {
 
             this.p.bullet_time += dt;
             this.p.life_time += dt;
-            //console.log( this.p.time);
 
             if(this.p.life_time < 11){
 
@@ -1017,9 +1026,7 @@ window.addEventListener("load", function() {
                     }
                     else if( this.p.y > 180){
                         this.p.vy = 0;
-                        this.p.vx = 0;
-
-                     //this.p.time += dt; 
+                        this.p.vx = 0; 
 
                     if(this.p.bullet_time > 5){
                         this.stage.insert(new Q.Bullet_Enemy({ x: this.p.x, y: this.p.y - this.p.w / 4, vx: -100 }));
@@ -1097,12 +1104,15 @@ window.addEventListener("load", function() {
                             if (Q.state.get("lifes") > 1) {
                                 Q.state.inc("lifes", -1);
                                 Q.state.set("score", 0);
+
                                 StartLevel1();
-                            } else {
+                            } 
+                            else {
                                 Q.clearStages();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
+
                      collision.obj.destroy();
                  }
                  else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
@@ -1127,7 +1137,7 @@ window.addEventListener("load", function() {
                         this.destroy();
                         setTimeout(function() {
                             Q.clearStages();
-                            Q.stageScene("winGame");
+                            Q.stageScene("winGame", 0);
                         }, 2625);
                         this.die();
                     }
@@ -1153,6 +1163,7 @@ window.addEventListener("load", function() {
                         this.p.vy = 0;
                         this.p.vx = 0;
                         this.p.move_time += dt;
+
                         if(this.p.move_time >= 1){
                             this.p.ini = false;
                             this.p.move_time = 0;
@@ -1169,7 +1180,7 @@ window.addEventListener("load", function() {
                         this.p.bullet_time = 0;
                     }
 
-                    //trngo que bajar
+                    //tengo que bajar
                     if(!this.p.direction){ // hacia abajo
                         if(this.p.y <= Q.height - 100){
                             this.p.vy = 50;
@@ -1253,6 +1264,7 @@ window.addEventListener("load", function() {
         },
         step: function(dt) {
             this.p.life_time += dt;
+
             if(this.p.life_time < 12){
                 this.play("show");
             }else{
@@ -1283,6 +1295,7 @@ window.addEventListener("load", function() {
         },
         step: function(dt) {
             this.p.life_time += dt;
+
             if(this.p.life_time < 12){
                 this.play("show");
             }else{
@@ -1311,7 +1324,6 @@ window.addEventListener("load", function() {
                 skipCollide: true
             });
 
-            //this.add("2d, animation");
             this.add("animation");
             this.play("explosion");
             this.on("exploted", this, function() {
@@ -1343,7 +1355,6 @@ window.addEventListener("load", function() {
                 skipCollide: true
             });
 
-            //this.add("2d, animation");
             this.add("animation");
             this.play("explosion");
             this.on("exploted", this, function() {
