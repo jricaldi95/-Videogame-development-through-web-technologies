@@ -10,7 +10,7 @@ window.addEventListener("load", function() {
             scaleToFit: false
         }).touch().controls();
 
-    Q.load(["Intro.ogg", "Mission1.ogg", "Boss1.ogg", "MissionCompleted.ogg", "GameOver.ogg"], function() { });
+    Q.load(["Intro.ogg", "Mission1.ogg", "Boss1.ogg", "Shoot1.ogg", "Shoot2.ogg", "ExplosionPlayer.ogg", "LittleExplosion.ogg", "MediumExplosion.ogg", "ExplosionBoss1.ogg", "Item.ogg", "MissionCompleted.ogg", "GameOver.ogg"], function() { });
 
     Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png, victory.png, defeat.png, bullets.png, items.json, explosion.png, explosion.json", function() {
         Q.compileSheets("planes.png", "planes.json");
@@ -73,7 +73,7 @@ window.addEventListener("load", function() {
 
         var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
         var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "victory.png" }));
-        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU  WIN!", size: 40, color: "white", family: "ARCADECLASSIC"}));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU WIN!", size: 40, color: "white", family: "ARCADECLASSIC"}));
 
         Q.state.set("score", 0);
         Q.state.set("lifes", 3);
@@ -316,22 +316,29 @@ window.addEventListener("load", function() {
                 pressedDown: false,
                 blocked_UD: false,
                 blocked_RL: false,
-                sprite:"anim_player",
-                item:0,
+                sprite: "anim_player",
+                item: 0,
+                sensor: true
             });
 
             this.add("animation");
             
             Q.input.on("fire",this,"shoot");
+
             this.on("hit", function(collision) {
-                if(collision.obj.isA("Item_weapon"))
+                if(collision.obj.isA("Item_weapon")){
                     this.p.item++;
+                    Q.audio.play("Item.ogg");
+                }
                 else if (collision.obj.isA("Item_score")){
                     Q.state.inc("score", 200);
+                    Q.audio.play("Item.ogg");
                 }
 
-                else
+                else{
+                    Q.audio.play("ExplosionPlayer.ogg");
                     this.stage.insert(new Q.Explosion({ x: this.p.x, y: this.p.y - this.p.w / 2 }));
+                }
             });
         },
         step: function(dt) {
@@ -481,12 +488,14 @@ window.addEventListener("load", function() {
         shoot: function() {
             console.log(this.p.item);
             if (this.p.item < 1) {
+                Q.audio.play("Shoot1.ogg");
                 this.stage.insert(new Q.Bullet({
                       x: this.p.x + this.p.w/2,
                     y: this.p.y,
                     vx: 1000
                 }))
             } else {
+                Q.audio.play("Shoot2.ogg");
                 this.stage.insert(new Q.Bullet_max({
                       x: this.p.x + this.p.w/2,
                     y: this.p.y,
@@ -515,7 +524,7 @@ window.addEventListener("load", function() {
                 frame: 0,
                 sprite: "anim_bullet",
                 type: Q.SPRITE_BULLET,
-                collisionMask: Q.SPRITE_ENEMY,
+                collisionMask: Q.SPRITE_ENEMY
             });
 
             this.add("2d");
@@ -546,6 +555,7 @@ window.addEventListener("load", function() {
                     sprite: "anim_bullet_max",
                     type: Q.SPRITE_BULLET,
                     collisionMask: Q.SPRITE_ENEMY,
+                    sensor: true
                 });
 
                 this.add("2d");
@@ -575,15 +585,16 @@ window.addEventListener("load", function() {
                 sheet: "bullet_enemy",
                 sprite: "anim_bullet_enemy",
                 gravity: 0,
-                type: Q.SPRITE_BULLET_ENEMY|Q.SPRITE_ENEMY,
+                type: Q.SPRITE_BULLET_ENEMY,
                 collisionMask: Q.SPRITE_PLAYER,
-                skipCollide:true
+                skipCollide:true,
+                sensor: true
             });
               this.add("2d");
 
               this.on("hit", function(collision) {
                 if (collision.obj.isA("Player")) {
-                    //animacion de muerte
+
                     setTimeout(function() {
                             if (Q.state.get("lifes") > 0) {
                                 Q.state.inc("lifes", -1);
@@ -647,7 +658,8 @@ window.addEventListener("load", function() {
                 vy:-20,
                 back: false,
                 sprite:"anim_enemies",
-                skipCollide: true //evita parar cuando colisiona uno con otro 
+                skipCollide: true, //evita parar cuando colisiona uno con otro 
+                sensor: true
             });
 
             this.add("2d,animation");
@@ -670,6 +682,7 @@ window.addEventListener("load", function() {
                  }
                  else if (collision.obj.isA("Bullet") || collision.obj.isA("Bullet_max")){
                     Q.state.inc("score", 50);
+                    Q.audio.play("ExplosionPlayer.ogg");
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 4 }));
                     this.destroy();
                     
@@ -720,7 +733,6 @@ window.addEventListener("load", function() {
                 vy:20,
                 back: false,
                 sprite:"anim_enemies",
-                
                 skipCollide: true //evita parar cuando colisiona uno con otro 
             });
 
@@ -744,6 +756,7 @@ window.addEventListener("load", function() {
                  }
                  else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
                     Q.state.inc("score", 50);
+                    Q.audio.play("ExplosionPlayer.ogg");
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 4 }));
                     this.destroy();
                     if (Q.state.get("score") >= 400 && !item) {
@@ -845,6 +858,7 @@ window.addEventListener("load", function() {
                  }
                 else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
                     Q.state.inc("score", 50);
+                    Q.audio.play("LittleExplosion.ogg");
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 4 }));
                     this.destroy();
                  }
@@ -909,6 +923,7 @@ window.addEventListener("load", function() {
                  }
                 else if (collision.obj.isA("Bullet")||collision.obj.isA("Bullet_max")){
                     Q.state.inc("score", 50);
+                    Q.audio.play("LittleExplosion.ogg");
                     this.stage.insert(new Q.Explosion_enemy({ x: this.p.x, y: this.p.y + this.p.w / 2 }));
                     this.destroy();
                  }
@@ -948,7 +963,8 @@ window.addEventListener("load", function() {
                 life: 5500,
                 bullet_time: 0,
                 life_time: 0,
-                skipCollide: true //evita parar cuando colisiona uno con otro 
+                skipCollide: true, //evita parar cuando colisiona uno con otro 
+                sensor: true
             });
 
             this.add("2d,animation");
@@ -1046,6 +1062,7 @@ window.addEventListener("load", function() {
             }
         },
         die:function(){
+            Q.audio.play("MediumExplosion.ogg");
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x + 20, y: this.p.y + this.p.w / 8 }));
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x - 120, y: this.p.y + this.p.w / 6 }));
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x - 50, y: this.p.y + this.p.w / 4 }));
@@ -1067,7 +1084,8 @@ window.addEventListener("load", function() {
                 direction: false,
                 type:Q.SPRITE_ENEMY,
                 collisionMask:Q.SPRITE_PLAYER|Q.SPRITE_BULLET,
-                skipCollide: true //evita parar cuando colisiona uno con otro 
+                skipCollide: true, //evita parar cuando colisiona uno con otro 
+                sensor: true
             });
 
             this.add("2d,animation");
@@ -1110,7 +1128,7 @@ window.addEventListener("load", function() {
                         setTimeout(function() {
                             Q.clearStages();
                             Q.stageScene("winGame");
-                        }, 1700);
+                        }, 2625);
                         this.die();
                     }
                  }
@@ -1189,6 +1207,7 @@ window.addEventListener("load", function() {
         
         },
         die:function(){
+            Q.audio.play("ExplosionBoss1.ogg");
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x + 20, y: this.p.y + this.p.w / 8 }));
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x - 120, y: this.p.y + this.p.w / 6 }));
             this.stage.insert(new Q.Explosion_enemy({ x: this.p.x - 50, y: this.p.y + this.p.w / 4 }));
