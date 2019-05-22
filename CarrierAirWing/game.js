@@ -10,7 +10,7 @@ window.addEventListener("load", function() {
             scaleToFit: false
         }).touch().controls();
 
-    //Q.load(["coin.ogg", "music_die.ogg", "music_level_comp lete.ogg", "music_main.ogg"], function() { });
+    Q.load(["Intro.ogg", "Mission1.ogg", "Boss1.ogg", "MissionCompleted.ogg", "GameOver.ogg"], function() { });
 
     Q.load("level1.png, planes.png, planes.json, enemies.png, enemies.json, boss1.png, boss1.json, mainTitle.png, victory.png, defeat.png, bullets.png, items.json, explosion.png, explosion.json", function() {
         Q.compileSheets("planes.png", "planes.json");
@@ -23,13 +23,18 @@ window.addEventListener("load", function() {
 
     var StartLevel1 = function() {
         Q.clearStages();
-        //Q.audio.stop();
+        Q.audio.stop();
         Q.stageScene("background", 0);
         Q.stageScene("level", 1);
         Q.stageScene("HUD", 2);
+        Q.audio.play("Mission1.ogg", {
+            loop: true
+        });
     };
 
     Q.scene("mainTitle", function(stage) {
+
+
         var container = stage.insert(new Q.UI.Container({
             x: Q.width / 2,
             y: Q.height / 2
@@ -42,11 +47,18 @@ window.addEventListener("load", function() {
         var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#CCCCCC", asset: "mainTitle.png"}))
 
         button.on("click", function() {
-            StartLevel1();
+            Q.audio.play("Intro.ogg");
+            setTimeout(function() {
+                  StartLevel1();          
+            }, 3500);
+            
         });
 
         Q.input.on("confirm", this, function() {
-            StartLevel1();
+            Q.audio.play("Intro.ogg");
+            setTimeout(function() {
+                  StartLevel1();          
+            }, 3500);
         });
 
         container.fit(20);
@@ -56,9 +68,12 @@ window.addEventListener("load", function() {
 
     Q.scene("winGame", function(stage) {
 
+        Q.audio.stop();
+        Q.audio.play("MissionCompleted.ogg");
+
         var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
         var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "victory.png" }));
-        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU WIN!", size: 40, color: "white", family: "ARCADECLASSIC"}));
+        var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "YOU  WIN!", size: 40, color: "white", family: "ARCADECLASSIC"}));
 
         Q.state.set("score", 0);
         Q.state.set("lifes", 3);
@@ -77,6 +92,10 @@ window.addEventListener("load", function() {
     });
 
     Q.scene("loseGame", function(stage) {
+
+        Q.audio.stop();
+        Q.audio.play("GameOver.ogg");
+
         var container = stage.insert(new Q.UI.Container({ x: Q.width, y: Q.height }));
         var button = container.insert(new Q.UI.Button({ x: -Q.width / 2, y: -Q.height / 2, fill: "#CCCCCC", asset: "defeat.png" }));
         var gameOverLabel = stage.insert(new Q.UI.Text({ x: Q.width / 2, y: 15, label: "GAME OVER", size: 40, color: "white", family: "ARCADECLASSIC"}));
@@ -1063,7 +1082,6 @@ window.addEventListener("load", function() {
                                 StartLevel1();
                             } else {
                                 Q.clearStages();
-                                //Q.audio.stop();
                                 Q.stageScene("loseGame", 0);
                             }
                         }, 1700);
@@ -1091,13 +1109,15 @@ window.addEventListener("load", function() {
                         this.destroy();
                         setTimeout(function() {
                             Q.clearStages();
-                            //Q.audio.stop();
                             Q.stageScene("winGame");
                         }, 1700);
                         this.die();
                     }
                  }
             });
+
+            Q.audio.stop();
+            Q.audio.play("Boss1.ogg");
         },
         step:function(dt){
 
