@@ -1083,7 +1083,7 @@ window.addEventListener("load", function() {
             this._super(p,{
                 sheet:"boss1",
                 frame: 0,
-                life : 35000,
+                life : 32500,
                 bullet_time: 0,
                 life_time: 0,
                 move_time: 0,
@@ -1135,7 +1135,7 @@ window.addEventListener("load", function() {
                         setTimeout(function() {
                             Q.clearStages();
                             Q.stageScene("winGame", 0);
-                        }, 2625);
+                        }, 2000);
                         this.die();
                     }
                  }
