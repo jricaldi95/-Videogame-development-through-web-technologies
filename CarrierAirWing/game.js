@@ -116,19 +116,25 @@ window.addEventListener("load", function() {
     });
 
      var level1 = [//21600
+         
         // Start,   End, Gap,  Type,   Override
-        [1000, 2000, 300, 'Enemy1', {  x: Q.width,y :200 }],
+       [1000, 2000, 300, 'Enemy1', {  x: Q.width,y :200 }],
         [3000, 4000, 300, 'Enemy1', { x:  Q.width, y: 350 }],
         [5000, 6500, 300,  'Enemy2', {  x: Q.width,y : 300 }],
         [7200, 8200, 250, 'Enemy2', { x:  Q.width, y: 150 }],
         [7200, 8200, 250, 'Enemy1', {  x: Q.width,y : 360 }],
         [10000, 12000, 350, 'Enemy4', { x: 350, y : Q.height-20}],
+        [10000, 12000, 350, 'Enemy3', { x: 300, y : 0}],
         [11500, 13000, 13000, 'Enemy5', {  x: Q.width-100,y: Q.height-20,direction: false}],
         [19000, 24000, 24000, 'Enemy5', {  x: Q.width-100,y: 20,direction: true}],
-        [21600, 23500, 250, 'Enemy3', {  x: 300, y :  Q.height-20}],
-        [28500, 29050, 250, 'Enemy4', {  x: 350, y : 0}],
+        [21600, 23500, 250, 'Enemy3', {  x: 550, y :  Q.height-20}],
+        [21600, 23500, 250, 'Enemy4', {  x: 350, y : 0}],
+        [22000, 23900, 250, 'Enemy3', {  x: 150, y :  Q.height-20}],
+        [22000, 23900, 250, 'Enemy4', {  x: 0, y : 0}],
+        [24800, 29000, 500, 'Enemy2', { x: Q.width, y: 180 }],
+        [24800, 29000, 500, 'Enemy1', { x: Q.width, y: 320 }],
         [29800, 31000, 200, 'Enemy3', {  x: 0, y : 0}],
-        [29800, 31000, 200, 'Enemy4', { x: 350, y: 0 }],
+        [29800, 31000, 200, 'Enemy4', { x: 350, y: Q.height-20 }],
         [32000, 35000, 35000, 'Boss1', { x: 300, y: 20 }]
     ];
 
@@ -453,7 +459,7 @@ window.addEventListener("load", function() {
                 }
             }
 
-            /**************** BOLQUEO UP-DOWN *****************/
+            /**************** BLOQUEO UP-DOWN *****************/
             if(this.p.blocked_UD && ((Q.inputs['down'] && !Q.inputs['up']) || (!Q.inputs['down'] && Q.inputs['up']) ))
                 this.p.blocked_UD = false;
 
@@ -486,7 +492,7 @@ window.addEventListener("load", function() {
 
         },
         shoot: function() {
-            console.log(this.p.item);
+            //console.log(this.p.item);
             if (this.p.item < 1) {
                 Q.audio.play("Shoot1.ogg");
                 this.stage.insert(new Q.Bullet({
@@ -881,7 +887,6 @@ window.addEventListener("load", function() {
                    
                    this.play("up");
                    this.p.vy = -220;
-
                    this.subiendo = true;
                
               }
@@ -943,15 +948,15 @@ window.addEventListener("load", function() {
                 
                     this.play("up");
               }
-              else if (this.p.y < 150 ){
+        else if (this.p.y < 150 ){
                    
                    this.play("down");
                    this.p.vy = 200;
                    this.bajando = true;
                
-              }
-             this.p.x += this.p.vx * dt;
-          if (this.p.y > Q.height || this.p.y < 0 || this.p.x > Q.width || this.p.x < 0) {
+            }
+            this.p.x += this.p.vx * dt;
+          if (this.p.y > Q.height || this.p.y < 0 ) {
                 this.destroy();
             }
         }
@@ -1120,11 +1125,11 @@ window.addEventListener("load", function() {
                     this.p.life = this.p.life - 250;
 
                     if(this.p.life == 21500){
-                        console.log("Motores fuera!!");
+                        //console.log("Motores fuera!!");
                         this.p.frame = 1;
                     }
                     else if (this.p.life == 9500){
-                        console.log("Alas fuera!!");
+                       // console.log("Alas fuera!!");
                         this.p.frame = 2;
                     }
 
@@ -1210,8 +1215,15 @@ window.addEventListener("load", function() {
                 this.p.vx = 250;
             }
 
-            if( this.p.vx > Q.width)
+            if( this.p.x > Q.width + 150){
                 this.destroy();
+                setTimeout(function() {
+                  
+                    Q.clearStages();
+                    Q.stageScene("loseGame", 0);
+
+                }, 1700);
+            }
         
         },
         die:function(){
