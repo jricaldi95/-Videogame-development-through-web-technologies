@@ -133,9 +133,9 @@ window.addEventListener("load", function() {
         [22000, 23900, 250, 'Enemy4', {  x: 0, y : 0}],
         [24800, 29000, 500, 'Enemy2', { x: Q.width, y: 180 }],
         [24800, 29000, 500, 'Enemy1', { x: Q.width, y: 320 }],
-        [29800, 31000, 200, 'Enemy3', {  x: 0, y : 0}],
-        [29800, 31000, 200, 'Enemy4', { x: 350, y: Q.height-20 }],
-        [32000, 35000, 35000, 'Boss1', { x: 300, y: 20 }]
+        //[29800, 31000, 200, 'Enemy3', {  x: 0, y : 0}],
+        //[29800, 31000, 200, 'Enemy4', { x: 350, y: Q.height-20 }],
+        [29500, 35000, 35000, 'Boss1', { x: 300, y: 20 }]
     ];
 
     Q.scene("level", function(stage) {
@@ -271,7 +271,7 @@ window.addEventListener("load", function() {
             });
         },
         step: function(dt) {
-            //console.log(this.p.x);
+            console.log(this.p.x);
             if(this.p.x > -10076)
                 this.p.x -= this.p.vx * dt;
             if((this.p.x < 2750) && this.p.y > 0)
@@ -1137,10 +1137,12 @@ window.addEventListener("load", function() {
                         this.p.frame = 3;
                         Q.state.inc("score", 500);
                         this.destroy();
+
                         setTimeout(function() {
                             Q.clearStages();
                             Q.stageScene("winGame", 0);
-                        }, 2000);
+                        }, 2050);
+
                         this.die();
                     }
                  }
@@ -1154,7 +1156,7 @@ window.addEventListener("load", function() {
             this.p.bullet_time += dt;
             this.p.life_time += dt;
 
-            if(this.p.life_time < 23){
+            if(this.p.life_time < 18){
 
                 if(this.p.ini){
                     if(this.p.y < 235){
@@ -1222,7 +1224,7 @@ window.addEventListener("load", function() {
                     Q.clearStages();
                     Q.stageScene("loseGame", 0);
 
-                }, 1700);
+                }, 700);
             }
         
         },
